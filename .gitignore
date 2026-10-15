@@ -1,0 +1,16 @@
+# Tema PS5 pessoal: arquivos da Sony (logos, fonte, ícones, sons). Nunca versionar nem distribuir.
+themes/ps5/
+
+# Build
+build/
+out/
+CMakeUserPresets.json
+vcpkg_installed/
+
+# Qt Creator
+*.user
+*.user.*
+
+# Dados locais do hub
+dados/
+midia/

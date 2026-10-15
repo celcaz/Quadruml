@@ -1,0 +1,597 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quadrum I — Wireframes</title>
+<style>
+  :root {
+    --bg: #0d0f13;
+    --page-text: #d9dde4;
+    --muted: #8b93a1;
+    --frame: #171a20;
+    --box: #232831;
+    --box-strong: #2e3440;
+    --line: #4a5160;
+    --focus: #ffffff;
+    --accent: #4c8dff;
+    --gold: #d9b45a;
+    --silver: #aeb5c0;
+    --bronze: #b9825a;
+    --plat: #9fd3ff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--page-text);
+    font: 15px/1.5 system-ui, "Segoe UI", sans-serif;
+  }
+  main { max-width: 1180px; margin: 0 auto; padding: 32px 20px 80px; }
+  h1 { font-size: 28px; margin: 0 0 4px; }
+  h2 { font-size: 20px; margin: 56px 0 4px; }
+  h2 small { color: var(--muted); font-weight: 400; font-size: 14px; margin-left: 8px; }
+  p.lead { color: var(--muted); margin: 0 0 24px; max-width: 760px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 20px; font-size: 13px; color: var(--muted); margin: 16px 0 8px; }
+  .legend span { display: inline-flex; align-items: center; gap: 8px; }
+  .sw { width: 28px; height: 16px; border-radius: 4px; background: var(--box); border: 1px dashed var(--line); display: inline-block; }
+  .sw.focus { border: 1px solid var(--box); outline: 2px solid var(--focus); outline-offset: 2px; }
+  .sw.n { width: 18px; height: 18px; border-radius: 50%; background: var(--accent); border: 0; }
+
+  .flow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 13px; margin: 8px 0 0; }
+  .flow b { background: var(--box); border: 1px solid var(--line); border-radius: 6px; padding: 4px 10px; font-weight: 500; }
+  .flow i { color: var(--muted); font-style: normal; }
+
+  .scroll { overflow-x: auto; margin-top: 12px; }
+  .frame {
+    position: relative;
+    min-width: 720px;
+    aspect-ratio: 16 / 9;
+    background: var(--frame);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+    container-type: inline-size;
+  }
+  .bg { position: absolute; inset: 0; background: linear-gradient(135deg, #262c37 0%, #15181e 70%); }
+  .dim { position: absolute; inset: 0; background: rgba(5, 6, 8, .62); }
+  .b {
+    position: absolute;
+    display: flex; align-items: center; justify-content: center; text-align: center;
+    padding: .4cqw .6cqw;
+    background: var(--box);
+    border: 1px dashed var(--line);
+    border-radius: .7cqw;
+    color: var(--muted);
+    font-size: clamp(8px, 1.15cqw, 14px);
+    line-height: 1.25;
+  }
+  .b.solid { border-style: solid; background: var(--box-strong); }
+  .b.ghost { background: transparent; }
+  .b.round { border-radius: 50%; }
+  .b.pill { border-radius: 99px; }
+  .b.left { justify-content: flex-start; text-align: left; padding-left: 1cqw; }
+  .b.col { flex-direction: column; align-items: flex-start; justify-content: center; text-align: left; padding-left: 1cqw; gap: .3cqw; }
+  .b.focus { outline: .22cqw solid var(--focus); outline-offset: .3cqw; color: var(--page-text); border-style: solid; }
+  .b.off { opacity: .45; }
+  .b strong { color: var(--page-text); font-weight: 600; }
+  .t { position: absolute; color: var(--page-text); font-size: clamp(9px, 1.3cqw, 16px); white-space: nowrap; }
+  .t.big { font-size: clamp(12px, 2.2cqw, 26px); font-weight: 600; }
+  .t.mid { font-size: clamp(10px, 1.6cqw, 19px); font-weight: 600; }
+  .t.muted { color: var(--muted); }
+  .t.small { font-size: clamp(8px, 1cqw, 12px); color: var(--muted); }
+  .bar { position: absolute; height: .7cqw; background: var(--box-strong); border-radius: 99px; overflow: hidden; }
+  .bar i { display: block; height: 100%; background: var(--accent); }
+  .hint { position: absolute; left: 0; right: 0; bottom: 0; height: 6%; display: flex; align-items: center; justify-content: flex-end; gap: 2.4cqw; padding: 0 3cqw; font-size: clamp(8px, 1cqw, 12px); color: var(--muted); background: rgba(0, 0, 0, .25); }
+  .n {
+    position: absolute; z-index: 5;
+    width: 2.2cqw; height: 2.2cqw; min-width: 16px; min-height: 16px;
+    border-radius: 50%; background: var(--accent); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: clamp(9px, 1.1cqw, 13px); font-weight: 700;
+  }
+  .g-plat { color: var(--plat); } .g-gold { color: var(--gold); } .g-silver { color: var(--silver); } .g-bronze { color: var(--bronze); }
+
+  .notes { margin: 14px 0 0; padding-left: 22px; max-width: 900px; }
+  .notes li { margin: 4px 0; }
+  .notes li::marker { color: var(--accent); font-weight: 700; }
+  .controls { margin: 10px 0 0; font-size: 13px; color: var(--muted); }
+  .controls b { color: var(--page-text); font-weight: 600; }
+  .phase { display: inline-block; font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 99px; padding: 1px 8px; margin-left: 8px; vertical-align: middle; }
+  .toc { columns: 2; column-gap: 32px; font-size: 14px; padding-left: 20px; margin: 8px 0 0; }
+  .toc a { color: var(--page-text); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+  @media (max-width: 640px) { .toc { columns: 1; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>Quadrum I — Wireframes</h1>
+  <p class="lead">Wireframes de baixa fidelidade de cada tela, em 16:9. Eles definem posição, hierarquia e navegação; cores, fontes, medidas exatas e animações virão das referências do PS5 no protótipo visual.</p>
+
+  <div class="legend">
+    <span><i class="sw"></i> Área de conteúdo ou imagem</span>
+    <span><i class="sw focus"></i> Item em foco (contorno branco, como no PS5)</span>
+    <span><i class="sw n"></i> Número explicado abaixo da tela</span>
+  </div>
+
+  <h2 style="margin-top:32px">Fluxo de navegação</h2>
+  <div class="flow">
+    <b>Assistente (1ª vez)</b><i>→</i><b>Seleção de perfil</b><i>→</i><b>Tela inicial</b><i>⇄</i><b>Biblioteca</b><i>·</i><b>Detalhes do jogo</b><i>·</i><b>Perfil</b><i>·</i><b>Configurações</b>
+  </div>
+  <div class="flow">
+    <b>Detalhes do jogo</b><i>→</i><b>Troféus do jogo</b>
+    <i style="margin-left:16px">Jogar →</i><b>Conflito de save (se houver)</b><i>→</i><b>Jogo</b><i>→ botão PS →</i><b>Central de controle</b>
+  </div>
+
+  <ol class="toc">
+    <li><a href="#perfil-selecao">Seleção de perfil</a></li>
+    <li><a href="#inicial">Tela inicial</a></li>
+    <li><a href="#biblioteca">Biblioteca</a></li>
+    <li><a href="#detalhes">Detalhes do jogo</a></li>
+    <li><a href="#trofeus">Troféus do jogo</a></li>
+    <li><a href="#perfil">Perfil</a></li>
+    <li><a href="#central">Central de controle</a></li>
+    <li><a href="#popup">Pop-up de troféu e captura</a></li>
+    <li><a href="#conflito">Conflito de save</a></li>
+    <li><a href="#config">Configurações</a></li>
+    <li><a href="#assistente-emuladores">Assistente: emuladores</a></li>
+    <li><a href="#assistente-bios">Assistente: BIOS e firmware</a></li>
+  </ol>
+
+  <!-- 1 -->
+  <h2 id="perfil-selecao">1. Seleção de perfil <span class="phase">Fase 1</span></h2>
+  <div class="scroll"><div class="frame">
+    <div class="bg"></div>
+    <div class="t big" style="left:50%;top:22%;transform:translateX(-50%)">Quem está jogando?</div>
+    <div class="b round focus" style="left:24%;top:38%;width:10%;height:17.8%">Avatar</div>
+    <div class="b round" style="left:38%;top:38%;width:10%;height:17.8%">Avatar</div>
+    <div class="b round" style="left:52%;top:38%;width:10%;height:17.8%">Avatar</div>
+    <div class="b round ghost" style="left:66%;top:38%;width:10%;height:17.8%">+</div>
+    <div class="t" style="left:29%;top:60%;transform:translateX(-50%)">Celio</div>
+    <div class="t muted" style="left:43%;top:60%;transform:translateX(-50%)">Perfil 2 🔒</div>
+    <div class="t muted" style="left:57%;top:60%;transform:translateX(-50%)">Perfil 3</div>
+    <div class="t muted" style="left:71%;top:60%;transform:translateX(-50%)">Adicionar</div>
+    <div class="b solid" style="left:37%;top:72%;width:26%;height:9%">PIN: ● ● ○ ○</div>
+    <div class="hint"><span>✕ Entrar</span><span>Opções: gerenciar perfil</span></div>
+    <span class="n" style="left:22%;top:35%">1</span>
+    <span class="n" style="left:41.5%;top:57.5%">2</span>
+    <span class="n" style="left:35%;top:70%">3</span>
+  </div></div>
+  <ol class="notes">
+    <li>Perfis em círculos, centralizados. Abre direto aqui ao iniciar o hub (ou entra sozinho se só existir um perfil sem PIN).</li>
+    <li>Cadeado indica perfil com PIN.</li>
+    <li>Ao escolher um perfil com PIN, aparece o campo de 4 dígitos, digitado com o direcional ou os botões.</li>
+  </ol>
+  <p class="controls"><b>Controles:</b> direcional esquerda/direita troca de perfil · ✕ entra · Opções abre editar, trocar avatar, definir PIN, remover.</p>
+
+  <!-- 2 -->
+  <h2 id="inicial">2. Tela inicial <span class="phase">Fase 1</span></h2>
+  <div class="scroll"><div class="frame">
+    <div class="bg"></div>
+    <div class="t mid" style="left:3%;top:4%">Jogos</div>
+    <div class="t muted" style="left:10%;top:4.6%">Galeria</div>
+    <div class="b round ghost" style="left:80%;top:3%;width:3%;height:5.3%">⌕</div>
+    <div class="b round ghost" style="left:84%;top:3%;width:3%;height:5.3%">⚙</div>
+    <div class="b round" style="left:88%;top:3%;width:3%;height:5.3%"></div>
+    <div class="t" style="left:92.5%;top:4.4%">21:45</div>
+
+    <div class="b solid focus" style="left:3%;top:13%;width:9%;height:16%">Capa</div>
+    <div class="t" style="left:13.5%;top:17%">Nome do jogo</div>
+    <div class="t small" style="left:13.5%;top:21.5%">PS2</div>
+    <div class="b" style="left:30%;top:15.5%;width:6%;height:10.7%">Capa</div>
+    <div class="b" style="left:37%;top:15.5%;width:6%;height:10.7%">Capa</div>
+    <div class="b" style="left:44%;top:15.5%;width:6%;height:10.7%">Capa</div>
+    <div class="b" style="left:51%;top:15.5%;width:6%;height:10.7%">Capa</div>
+    <div class="b" style="left:58%;top:15.5%;width:6%;height:10.7%">Capa</div>
+    <div class="b" style="left:65%;top:15.5%;width:6%;height:10.7%">Capa</div>
+    <div class="b" style="left:72%;top:15.5%;width:6%;height:10.7%">Capa</div>
+    <div class="b" style="left:79%;top:15.5%;width:6%;height:10.7%">Capa</div>
+    <div class="b solid" style="left:88%;top:15.5%;width:6%;height:10.7%">▦<br>Biblioteca</div>
+
+    <div class="b ghost" style="left:4%;top:40%;width:28%;height:14%">Logo do jogo</div>
+    <div class="b solid pill" style="left:4%;top:59%;width:12%;height:7.5%"><strong>Jogar</strong></div>
+    <div class="b solid pill" style="left:17%;top:59%;width:5%;height:7.5%">•••</div>
+    <div class="t small" style="left:4%;top:69.5%">34 h jogadas · 62% dos troféus · Save sincronizado</div>
+
+    <div class="b col" style="left:4%;top:77%;width:20%;height:15%"><strong>Troféus</strong>62% · próximo: Nome<div class="bar" style="position:relative;width:90%"><i style="width:62%"></i></div></div>
+    <div class="b col" style="left:26%;top:77%;width:20%;height:15%"><strong>Save na nuvem</strong>Sincronizado hoje, 21:40</div>
+    <div class="b col" style="left:48%;top:77%;width:20%;height:15%"><strong>Melhorias</strong>Widescreen e 60 fps disponíveis</div>
+    <div class="t small" style="right:2%;bottom:2%">Fundo: arte ou vídeo do jogo em foco</div>
+
+    <span class="n" style="left:1.5%;top:11%">1</span>
+    <span class="n" style="left:86.5%;top:13%">2</span>
+    <span class="n" style="left:2.5%;top:38%">3</span>
+    <span class="n" style="left:2.5%;top:57%">4</span>
+    <span class="n" style="left:2.5%;top:75%">5</span>
+    <span class="n" style="left:78.5%;top:1%">6</span>
+    <span class="n" style="left:95%;top:88%">7</span>
+  </div></div>
+  <ol class="notes">
+    <li>Fileira de jogos recentes de todas as plataformas. O jogo em foco cresce e mostra nome e plataforma ao lado, como no PS5.</li>
+    <li>Último item da fileira abre a Biblioteca completa.</li>
+    <li>Logo do jogo sobre a arte de fundo.</li>
+    <li>Jogar (abre o jogo; vira "Voltar ao jogo" se ele ainda estiver aberto) e ••• (opções: detalhes, troféus, patches, remover da fileira).</li>
+    <li>Cartões do jogo em foco: progresso de troféus, estado do save na nuvem, melhorias disponíveis (configuração por jogo).</li>
+    <li>Busca, Configurações, avatar do perfil (abre o Perfil) e relógio.</li>
+    <li>Arte de fundo ou vídeo troca com transição suave quando o foco muda. "Galeria" entra na Fase 5.</li>
+  </ol>
+  <p class="controls"><b>Controles:</b> esquerda/direita percorre a fileira · baixo desce para Jogar e para os cartões · ✕ joga · Opções abre ••• · △ troféus do jogo · L1/R1 alterna Jogos e Galeria.</p>
+
+  <!-- 3 -->
+  <h2 id="biblioteca">3. Biblioteca <span class="phase">Fase 1</span></h2>
+  <div class="scroll"><div class="frame">
+    <div class="bg" style="background:#15181e"></div>
+    <div class="t mid" style="left:4%;top:4%">Biblioteca</div>
+    <div class="b solid pill focus" style="left:4%;top:12%;width:7%;height:6%">Todos</div>
+    <div class="b pill" style="left:12%;top:12%;width:6%;height:6%">PS1</div>
+    <div class="b pill" style="left:19%;top:12%;width:6%;height:6%">PS2</div>
+    <div class="b pill" style="left:26%;top:12%;width:6%;height:6%">PS3</div>
+    <div class="b pill" style="left:33%;top:12%;width:6%;height:6%">PS4</div>
+    <div class="b pill" style="left:40%;top:12%;width:6%;height:6%">PC</div>
+    <div class="b pill ghost" style="left:68%;top:12%;width:16%;height:6%">Ordenar: último jogado</div>
+    <div class="b pill ghost" style="left:85%;top:12%;width:11%;height:6%">⌕ Buscar</div>
+    <div id="grid-lib"></div>
+    <div class="hint"><span>✕ Abrir detalhes</span><span>Opções: filtrar e ordenar</span><span>L1/R1: plataforma</span></div>
+    <span class="n" style="left:2.5%;top:10%">1</span>
+    <span class="n" style="left:66.5%;top:10%">2</span>
+    <span class="n" style="left:2.5%;top:20%">3</span>
+  </div></div>
+  <ol class="notes">
+    <li>Abas por plataforma; L1/R1 alterna entre elas.</li>
+    <li>Ordenação (nome, último jogado, tempo de jogo, progresso de troféus) e busca.</li>
+    <li>Grade de capas com selo de plataforma no canto. ✕ abre os Detalhes do jogo.</li>
+  </ol>
+
+  <!-- 4 -->
+  <h2 id="detalhes">4. Detalhes do jogo <span class="phase">Fase 1</span></h2>
+  <div class="scroll"><div class="frame">
+    <div class="bg"></div>
+    <div class="b ghost" style="left:0;top:0;width:100%;height:56%;border:0;border-bottom:1px dashed var(--line);border-radius:0;align-items:flex-start;justify-content:flex-end;padding:1.5cqw 2cqw">Arte grande do jogo</div>
+    <div class="b ghost" style="left:4%;top:24%;width:26%;height:13%">Logo do jogo</div>
+    <div class="b solid pill focus" style="left:4%;top:44%;width:12%;height:7.5%"><strong>Jogar</strong></div>
+    <div class="b solid pill" style="left:17%;top:44%;width:10%;height:7.5%">Troféus</div>
+    <div class="b solid pill" style="left:28%;top:44%;width:5%;height:7.5%">•••</div>
+
+    <div class="b col" style="left:4%;top:62%;width:20%;height:24%"><strong>Seu progresso</strong>34 h jogadas<br>Última vez: ontem<br>PS2 · emulador PCSX2</div>
+    <div class="b col" style="left:28%;top:62%;width:20%;height:24%"><strong>Troféus · 62%</strong>Últimos obtidos<div style="display:flex;gap:.6cqw"><span class="b" style="position:static;width:3cqw;height:3cqw">🏆</span><span class="b" style="position:static;width:3cqw;height:3cqw">🏆</span><span class="b" style="position:static;width:3cqw;height:3cqw">🏆</span></div></div>
+    <div class="b col" style="left:52%;top:62%;width:20%;height:24%"><strong>Save na nuvem</strong>Sincronizado hoje, 21:40<br>Ver histórico de versões</div>
+    <div class="b col" style="left:76%;top:62%;width:20%;height:24%"><strong>Configuração</strong>Recomendada: ativa<br>Widescreen: ligado<br>60 fps: desligado<br>Resolução: automática</div>
+    <div class="hint"><span>✕ Selecionar</span><span>○ Voltar</span></div>
+    <span class="n" style="left:2.5%;top:42%">1</span>
+    <span class="n" style="left:2.5%;top:60%">2</span>
+    <span class="n" style="left:26.5%;top:60%">3</span>
+    <span class="n" style="left:50.5%;top:60%">4</span>
+    <span class="n" style="left:74.5%;top:60%">5</span>
+  </div></div>
+  <ol class="notes">
+    <li>Ações principais: Jogar, Troféus e ••• (remover, abrir pasta, trocar capa).</li>
+    <li>Tempo de jogo, última sessão e emulador usado.</li>
+    <li>Resumo de troféus com os últimos obtidos; abre a tela Troféus do jogo.</li>
+    <li>Estado da nuvem e histórico de versões do save (restaurar uma versão antiga).</li>
+    <li>Configuração por jogo: perfil recomendado, patches de widescreen e 60 fps, resolução (automática pela GPU ou manual).</li>
+  </ol>
+
+  <!-- 5 -->
+  <h2 id="trofeus">5. Troféus do jogo <span class="phase">Fase 3</span></h2>
+  <div class="scroll"><div class="frame">
+    <div class="bg" style="background:#15181e"></div>
+    <div class="b solid" style="left:4%;top:8%;width:12%;height:21.3%">Capa</div>
+    <div class="t mid" style="left:4%;top:33%">Nome do jogo</div>
+    <div class="t small" style="left:4%;top:38.5%">62% concluído</div>
+    <div class="bar" style="left:4%;top:43%;width:28%"><i style="width:62%"></i></div>
+    <div class="t" style="left:4%;top:50%"><span class="g-plat">●</span> Platina 0/1</div>
+    <div class="t" style="left:4%;top:56%"><span class="g-gold">●</span> Ouro 2/5</div>
+    <div class="t" style="left:4%;top:62%"><span class="g-silver">●</span> Prata 6/12</div>
+    <div class="t" style="left:4%;top:68%"><span class="g-bronze">●</span> Bronze 20/30</div>
+    <div class="t small" style="left:4%;top:76%">Fonte: RPCS3 (troféus reais do PS3)</div>
+
+    <div class="b pill solid focus" style="left:38%;top:5%;width:8%;height:6%">Todos</div>
+    <div class="b pill" style="left:47%;top:5%;width:8%;height:6%">Obtidos</div>
+    <div class="b pill" style="left:56%;top:5%;width:11%;height:6%">Não obtidos</div>
+    <div class="b pill ghost" style="left:80%;top:5%;width:16%;height:6%">Ordenar: raridade</div>
+    <div id="list-trophies"></div>
+    <div class="hint"><span>✕ Detalhes do troféu</span><span>○ Voltar</span></div>
+    <span class="n" style="left:2.5%;top:6%">1</span>
+    <span class="n" style="left:1%;top:50%">2</span>
+    <span class="n" style="left:36.5%;top:3%">3</span>
+    <span class="n" style="left:36.5%;top:14%">4</span>
+  </div></div>
+  <ol class="notes">
+    <li>Capa, porcentagem e barra de progresso do jogo.</li>
+    <li>Contagem por nível e a fonte dos troféus (RPCS3, shadPS4, RetroAchievements ou Steam).</li>
+    <li>Filtros e ordenação (raridade, data, nível).</li>
+    <li>Lista: ícone, nome, descrição, nível, raridade e data. Não obtidos ficam apagados; ocultos mostram "Troféu oculto" até serem obtidos.</li>
+  </ol>
+
+  <!-- 6 -->
+  <h2 id="perfil">6. Perfil <span class="phase">Fase 3</span></h2>
+  <div class="scroll"><div class="frame">
+    <div class="bg" style="background:#15181e"></div>
+    <div class="b round solid" style="left:4%;top:7%;width:10%;height:17.8%">Avatar</div>
+    <div class="t big" style="left:16%;top:9%">Celio</div>
+    <div class="t small" style="left:16%;top:16.5%">Nível 23</div>
+    <div class="bar" style="left:16%;top:21%;width:22%"><i style="width:40%"></i></div>
+    <div class="t" style="left:46%;top:11%"><span class="g-plat">●</span> 4</div>
+    <div class="t" style="left:53%;top:11%"><span class="g-gold">●</span> 38</div>
+    <div class="t" style="left:60%;top:11%"><span class="g-silver">●</span> 112</div>
+    <div class="t" style="left:68%;top:11%"><span class="g-bronze">●</span> 406</div>
+    <div class="t small" style="left:46%;top:17%">Total de troféus por nível</div>
+
+    <div class="t mid" style="left:4%;top:32%">Platinas</div>
+    <div class="b solid focus" style="left:4%;top:38%;width:8%;height:14.2%">Capa</div>
+    <div class="b solid" style="left:13.5%;top:38%;width:8%;height:14.2%">Capa</div>
+    <div class="b solid" style="left:23%;top:38%;width:8%;height:14.2%">Capa</div>
+    <div class="b solid" style="left:32.5%;top:38%;width:8%;height:14.2%">Capa</div>
+
+    <div class="b col" style="left:4%;top:60%;width:28%;height:28%"><strong>Horas por plataforma</strong>Gráfico de barras: PS1 · PS2 · PS3 · PS4 · PC</div>
+    <div class="b col" style="left:35%;top:60%;width:28%;height:28%"><strong>Troféus recentes</strong>Últimos 5, com jogo e data</div>
+    <div class="b col" style="left:66%;top:60%;width:28%;height:28%"><strong>Retrospectiva 2026</strong>Horas, jogos mais jogados, platinas do ano<br><span style="font-size:.9em">(Fase 5)</span></div>
+    <div class="hint"><span>✕ Abrir</span><span>Opções: editar perfil</span><span>○ Voltar</span></div>
+    <span class="n" style="left:2.5%;top:5%">1</span>
+    <span class="n" style="left:44.5%;top:8%">2</span>
+    <span class="n" style="left:2.5%;top:30%">3</span>
+    <span class="n" style="left:2.5%;top:58%">4</span>
+  </div></div>
+  <ol class="notes">
+    <li>Avatar, nome e nível do perfil (sobe com os troféus obtidos).</li>
+    <li>Totais por nível, somando todas as plataformas.</li>
+    <li>Vitrine das platinas; cada capa abre os troféus daquele jogo.</li>
+    <li>Estatísticas: horas por plataforma, troféus recentes e Retrospectiva anual (Fase 5).</li>
+  </ol>
+
+  <!-- 7 -->
+  <h2 id="central">7. Central de controle <span class="phase">Fase 2</span></h2>
+  <div class="scroll"><div class="frame">
+    <div class="bg"></div>
+    <div class="t muted" style="left:50%;top:22%;transform:translateX(-50%)">Jogo em execução (escurecido ao fundo)</div>
+    <div class="dim" style="top:auto;height:48%;background:linear-gradient(to top, rgba(5,6,8,.9), rgba(5,6,8,0))"></div>
+    <div class="b col solid focus" style="left:4%;top:54%;width:24%;height:20%"><strong>Nome do jogo</strong>Jogando há 1 h 12 min<br>✕ Voltar ao jogo</div>
+    <div class="b col solid" style="left:30%;top:54%;width:24%;height:20%"><strong>Troféus desta sessão</strong>2 obtidos · ver lista</div>
+    <div class="b col solid" style="left:56%;top:54%;width:24%;height:20%"><strong>Save na nuvem</strong>Será enviado ao fechar o jogo</div>
+    <div class="b solid" style="left:0;top:80%;width:100%;height:20%;border-radius:0;border-left:0;border-right:0;border-bottom:0"></div>
+    <div class="b round" style="left:4%;top:84%;width:4.5%;height:8%">⌂</div>
+    <div class="b round" style="left:10%;top:84%;width:4.5%;height:8%">✕</div>
+    <div class="b round" style="left:16%;top:84%;width:4.5%;height:8%">🏆</div>
+    <div class="b round" style="left:22%;top:84%;width:4.5%;height:8%">☁</div>
+    <div class="b round" style="left:28%;top:84%;width:4.5%;height:8%">🎮</div>
+    <div class="b round" style="left:34%;top:84%;width:4.5%;height:8%">⚙</div>
+    <div class="b round" style="left:40%;top:84%;width:4.5%;height:8%">⏻</div>
+    <div class="t" style="left:90%;top:86.5%">21:45</div>
+    <div class="t small" style="left:4%;top:93.5%">Início · Fechar jogo · Troféus · Nuvem · Controle · Configurações · Desligar</div>
+    <span class="n" style="left:2.5%;top:52%">1</span>
+    <span class="n" style="left:2.5%;top:80.5%">2</span>
+  </div></div>
+  <ol class="notes">
+    <li>Cartões do jogo atual: tempo da sessão, troféus da sessão e estado do save. Abre ao apertar o botão PS durante o jogo; o jogo fica pausado quando o emulador permite.</li>
+    <li>Barra de ícones: voltar à tela inicial (jogo continua aberto), fechar o jogo (salva e sincroniza), troféus, nuvem, controle (bateria e mapeamento), configurações rápidas e desligar (sair do hub ou desligar o PC).</li>
+  </ol>
+  <p class="controls"><b>Controles:</b> botão PS abre e fecha · esquerda/direita navega · baixo desce para a barra de ícones · ○ volta ao jogo.</p>
+
+  <!-- 8 -->
+  <h2 id="popup">8. Pop-up de troféu e captura <span class="phase">Fase 3</span></h2>
+  <div class="scroll"><div class="frame">
+    <div class="bg"></div>
+    <div class="t muted" style="left:50%;top:50%;transform:translate(-50%,-50%)">Jogo em execução, em tela cheia sem bordas</div>
+    <div class="b solid left" style="left:66%;top:4%;width:30%;height:12%;gap:1cqw">
+      <span class="b" style="position:static;width:4.5cqw;height:4.5cqw;flex:none">🏆</span>
+      <span style="display:flex;flex-direction:column;align-items:flex-start"><span style="font-size:.85em">Você conquistou um troféu</span><strong>Nome do troféu</strong><span class="g-gold" style="font-size:.85em">● Ouro · 4,2% dos jogadores</span></span>
+    </div>
+    <div class="b solid left" style="left:66%;top:19%;width:30%;height:8%;gap:1cqw;opacity:.75">
+      <span style="font-size:1.4em">▣</span><span>Captura de tela salva</span>
+    </div>
+    <span class="n" style="left:64.5%;top:2%">1</span>
+    <span class="n" style="left:64.5%;top:17.5%">2</span>
+  </div></div>
+  <ol class="notes">
+    <li>Pop-up de troféu no canto superior direito, por alguns segundos, com som. A platina usa ícone, animação e som próprios. Janela separada e transparente, nunca injetada no jogo.</li>
+    <li>Aviso no mesmo lugar ao apertar Share: o print é salvo direto, sem menu.</li>
+  </ol>
+
+  <!-- 9 -->
+  <h2 id="conflito">9. Conflito de save <span class="phase">Fase 4</span></h2>
+  <div class="scroll"><div class="frame">
+    <div class="bg"></div>
+    <div class="dim"></div>
+    <div class="b solid" style="left:18%;top:12%;width:64%;height:76%;border-radius:1.2cqw"></div>
+    <div class="t mid" style="left:50%;top:17%;transform:translateX(-50%)">Qual save você quer usar?</div>
+    <div class="t small" style="left:50%;top:23.5%;transform:translateX(-50%)">O save deste PC e o da nuvem mudaram desde a última sincronização.</div>
+    <div class="b col focus" style="left:22%;top:31%;width:27%;height:38%"><strong>Neste PC</strong><span class="b" style="position:static;width:100%;height:9cqw">Miniatura</span>Hoje, 20:10 · PC-SALA<br>Tempo de jogo: 34 h 10 min</div>
+    <div class="b col" style="left:51%;top:31%;width:27%;height:38%"><strong>Na nuvem</strong><span class="b" style="position:static;width:100%;height:9cqw">Miniatura</span>Hoje, 18:55 · NOTEBOOK<br>Tempo de jogo: 33 h 40 min</div>
+    <div class="b pill solid" style="left:22%;top:75%;width:17%;height:7%"><strong>Usar este save</strong></div>
+    <div class="b pill" style="left:41%;top:75%;width:17%;height:7%">Ver histórico</div>
+    <div class="b pill" style="left:60%;top:75%;width:18%;height:7%">Cancelar</div>
+    <span class="n" style="left:20.5%;top:29%">1</span>
+    <span class="n" style="left:20.5%;top:73%">2</span>
+  </div></div>
+  <ol class="notes">
+    <li>Os dois saves lado a lado, com data, PC de origem e tempo de jogo. O mais recente vem em foco.</li>
+    <li>O save não escolhido não é apagado: vai para o histórico de versões.</li>
+  </ol>
+
+  <!-- 10 -->
+  <h2 id="config">10. Configurações <span class="phase">Fase 2</span></h2>
+  <div class="scroll"><div class="frame">
+    <div class="bg" style="background:#15181e"></div>
+    <div class="t mid" style="left:4%;top:5%">Configurações</div>
+    <div id="menu-config"></div>
+    <div class="t mid" style="left:34%;top:5%">Emuladores</div>
+    <div id="rows-emu"></div>
+    <div class="hint"><span>✕ Selecionar</span><span>○ Voltar</span></div>
+    <span class="n" style="left:2.5%;top:11%">1</span>
+    <span class="n" style="left:32.5%;top:11%">2</span>
+  </div></div>
+  <ol class="notes">
+    <li>Seções: Perfis, Biblioteca e pastas, Emuladores, Contas (Steam, RetroAchievements, PSN), Nuvem e saves, Troféus, Controle, Vídeo e desempenho, Tema, Idioma, Sobre.</li>
+    <li>Exemplo da seção Emuladores: versão instalada, estado da BIOS, atualizar, configurar, adicionar ou remover (a mesma checklist do assistente).</li>
+  </ol>
+
+  <!-- 11 -->
+  <h2 id="assistente-emuladores">11. Assistente: emuladores <span class="phase">Fase 2</span></h2>
+  <div class="scroll"><div class="frame">
+    <div class="bg"></div>
+    <div id="steps-a"></div>
+    <div class="t big" style="left:20%;top:18%">Quais emuladores instalar?</div>
+    <div class="t small" style="left:20%;top:25.5%">Baixados dos sites oficiais. Você pode mudar isso depois em Configurações.</div>
+    <div id="check-emu"></div>
+    <div class="b pill" style="left:20%;top:84%;width:12%;height:7%">Voltar</div>
+    <div class="b pill solid focus" style="left:68%;top:84%;width:12%;height:7%"><strong>Continuar</strong></div>
+    <span class="n" style="left:18.5%;top:4%">1</span>
+    <span class="n" style="left:18.5%;top:31%">2</span>
+  </div></div>
+  <ol class="notes">
+    <li>Etapas do assistente: Pasta · Emuladores · BIOS · Jogos · Contas.</li>
+    <li>Checklist com tamanho do download. shadPS4 vem desmarcado (experimental).</li>
+  </ol>
+
+  <!-- 12 -->
+  <h2 id="assistente-bios">12. Assistente: BIOS e firmware <span class="phase">Fase 2</span></h2>
+  <div class="scroll"><div class="frame">
+    <div class="bg"></div>
+    <div id="steps-b"></div>
+    <div class="t big" style="left:20%;top:18%">BIOS e firmware</div>
+    <div class="t small" style="left:20%;top:25.5%">Use os arquivos dos seus próprios consoles. O hub identifica cada um sozinho.</div>
+    <div class="b" style="left:20%;top:31%;width:60%;height:16%">Arraste os arquivos aqui ou <strong>&nbsp;escolha uma pasta</strong></div>
+    <div id="rows-bios"></div>
+    <div class="b pill" style="left:20%;top:84%;width:12%;height:7%">Voltar</div>
+    <div class="b pill" style="left:52%;top:84%;width:15%;height:7%">Pular por agora</div>
+    <div class="b pill solid focus" style="left:68%;top:84%;width:12%;height:7%"><strong>Continuar</strong></div>
+    <span class="n" style="left:18.5%;top:29%">1</span>
+    <span class="n" style="left:18.5%;top:50%">2</span>
+  </div></div>
+  <ol class="notes">
+    <li>Área para arrastar arquivos ou escolher uma pasta (a pasta é varrida e os arquivos reconhecidos pelo hash).</li>
+    <li>Estado por console. O firmware do PS3 é instalado no RPCS3 automaticamente. O PS4 não precisa de BIOS.</li>
+  </ol>
+</main>
+
+<script>
+  // Elementos repetidos gerados aqui para manter o HTML legível.
+  function box(parent, cls, l, t, w, h, html, extra) {
+    const d = document.createElement('div');
+    d.className = 'b ' + cls;
+    d.style.cssText = `left:${l}%;top:${t}%;width:${w}%;height:${h}%;` + (extra || '');
+    d.innerHTML = html;
+    parent.appendChild(d);
+    return d;
+  }
+  function slot(id) {
+    const el = document.getElementById(id);
+    const frame = el.parentElement;
+    el.remove();
+    return frame;
+  }
+
+  // Biblioteca: grade 7 x 3
+  {
+    const f = slot('grid-lib');
+    const plats = ['PS2', 'PC', 'PS1', 'PS3', 'PC', 'PS4', 'PS2'];
+    const cols = [4, 16.5, 29, 41.5, 54, 66.5, 79];
+    const rows = [22, 45, 68];
+    rows.forEach((t, r) => cols.forEach((l, c) => {
+      const first = r === 0 && c === 0;
+      box(f, first ? 'solid focus' : '', l, t, 10, 17.8,
+        `Capa<span style="position:absolute;right:.5cqw;bottom:.4cqw;font-size:.8em">${plats[(c + r) % 7]}</span>`);
+    }));
+  }
+
+  // Troféus: lista
+  {
+    const f = slot('list-trophies');
+    const items = [
+      ['Nome do troféu', 'Descrição curta do que fazer', 'g-gold', 'Ouro', '4,2%', '12/10/2026', true],
+      ['Nome do troféu', 'Descrição curta do que fazer', 'g-silver', 'Prata', '18,7%', '11/10/2026', true],
+      ['Nome do troféu', 'Descrição curta do que fazer', 'g-bronze', 'Bronze', '45,0%', '09/10/2026', true],
+      ['Nome do troféu', 'Descrição curta do que fazer', 'g-bronze', 'Bronze', '61,3%', '—', false],
+      ['Troféu oculto', 'Continue jogando para descobrir', 'g-silver', 'Prata', '9,8%', '—', false],
+      ['Nome do troféu', 'Obtenha todos os outros troféus', 'g-plat', 'Platina', '1,1%', '—', false],
+    ];
+    items.forEach((it, i) => {
+      const t = 14 + i * 12.5;
+      const row = box(f, (i === 0 ? 'focus ' : '') + (it[6] ? 'solid left' : 'left off'), 38, t, 58, 10.5, '');
+      row.style.gap = '1.2cqw';
+      row.innerHTML =
+        `<span class="b" style="position:static;width:4.2cqw;height:4.2cqw;flex:none">🏆</span>` +
+        `<span style="display:flex;flex-direction:column;align-items:flex-start;flex:1"><strong>${it[0]}</strong><span>${it[1]}</span></span>` +
+        `<span class="${it[2]}" style="width:7cqw">● ${it[3]}</span>` +
+        `<span style="width:6cqw">${it[4]}</span>` +
+        `<span style="width:8cqw">${it[5]}</span>`;
+    });
+  }
+
+  // Configurações: menu e linhas de emuladores
+  {
+    const f = slot('menu-config');
+    const items = ['Perfis', 'Biblioteca e pastas', 'Emuladores', 'Contas', 'Nuvem e saves', 'Troféus', 'Controle', 'Vídeo e desempenho', 'Tema', 'Idioma', 'Sobre'];
+    items.forEach((name, i) => box(f, i === 2 ? 'solid focus left' : 'ghost left', 4, 13 + i * 6.9, 24, 5.8, name, 'border:0'));
+  }
+  {
+    const f = slot('rows-emu');
+    const emus = [
+      ['DuckStation', 'PS1', 'BIOS encontrada'],
+      ['PCSX2', 'PS2', 'BIOS encontrada'],
+      ['RPCS3', 'PS3', 'Firmware instalado'],
+      ['shadPS4', 'PS4', 'Não instalado'],
+    ];
+    emus.forEach((e, i) => {
+      const row = box(f, 'solid left', 34, 13 + i * 16, 62, 13.5, '');
+      row.style.gap = '1.5cqw';
+      row.innerHTML =
+        `<span style="display:flex;flex-direction:column;align-items:flex-start;flex:1"><strong>${e[0]} · ${e[1]}</strong><span>Versão instalada · ${e[2]}</span></span>` +
+        `<span class="b pill" style="position:static;width:9cqw;height:3.4cqw">${i === 3 ? 'Instalar' : 'Atualizar'}</span>` +
+        `<span class="b pill" style="position:static;width:9cqw;height:3.4cqw">Configurar</span>`;
+    });
+  }
+
+  // Assistente: barra de etapas
+  function steps(id, active) {
+    const f = slot(id);
+    ['Pasta', 'Emuladores', 'BIOS', 'Jogos', 'Contas'].forEach((s, i) => {
+      const done = i < active, on = i === active;
+      box(f, (on ? 'solid ' : 'ghost ') + 'pill', 20 + i * 12.4, 6, 11.4, 6,
+        `${done ? '✓' : i + 1} · ${s}`, on ? 'color:var(--page-text)' : (done ? 'opacity:.8' : 'opacity:.5'));
+    });
+  }
+  steps('steps-a', 1);
+  steps('steps-b', 2);
+
+  // Assistente: checklist de emuladores
+  {
+    const f = slot('check-emu');
+    const rows = [
+      ['DuckStation', 'PS1', true, ''],
+      ['PCSX2', 'PS2', true, ''],
+      ['RPCS3', 'PS3', true, ''],
+      ['shadPS4', 'PS4', false, ' · experimental'],
+      ['rclone', 'Nuvem dos saves', true, ''],
+    ];
+    rows.forEach((r, i) => {
+      const row = box(f, (i === 0 ? 'focus ' : '') + 'solid left', 20, 33 + i * 9.5, 60, 8, '');
+      row.style.gap = '1.2cqw';
+      row.innerHTML =
+        `<span style="font-size:1.3em;width:2cqw">${r[2] ? '☑' : '☐'}</span>` +
+        `<span style="flex:1"><strong>${r[0]}</strong> · ${r[1]}${r[3]}</span>` +
+        `<span>Tamanho do download</span>`;
+    });
+  }
+
+  // Assistente: estado da BIOS
+  {
+    const f = slot('rows-bios');
+    const rows = [
+      ['PS1 · BIOS', 'Encontrado (SCPH-1001)', true],
+      ['PS2 · BIOS', 'Faltando', false],
+      ['PS3 · Firmware PS3UPDAT.PUP', 'Encontrado · será instalado no RPCS3', true],
+      ['PS4', 'Não precisa de BIOS', true],
+    ];
+    rows.forEach((r, i) => {
+      const row = box(f, 'solid left', 20, 51 + i * 7.6, 60, 6.6, '');
+      row.style.gap = '1.2cqw';
+      row.innerHTML =
+        `<span style="flex:1"><strong>${r[0]}</strong></span>` +
+        `<span style="color:${r[2] ? 'var(--page-text)' : 'var(--gold)'}">${r[2] ? '✓' : '!'} ${r[1]}</span>`;
+    });
+  }
+</script>
+</body>
+</html>

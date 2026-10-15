@@ -1,0 +1,10 @@
+#pragma once
+
+// Gerado pelo CMake a partir de AppInfo.h.in. Não edite AppInfo.h diretamente.
+namespace AppInfo {
+inline constexpr char DisplayName[] = "@QUADRUM_DISPLAY_NAME@";
+inline constexpr char Id[] = "@QUADRUM_APP_ID@";
+inline constexpr char Version[] = "@PROJECT_VERSION@";
+// Pasta de temas do código-fonte, usada ao rodar pelo Qt Creator.
+inline constexpr char SourceThemesDir[] = "@CMAKE_SOURCE_DIR@/themes";
+}
