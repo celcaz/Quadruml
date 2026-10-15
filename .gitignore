@@ -3,6 +3,7 @@ themes/ps5/
 
 # Build
 build/
+dist/
 out/
 CMakeUserPresets.json
 vcpkg_installed/
