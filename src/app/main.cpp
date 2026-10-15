@@ -1,5 +1,6 @@
 #include <QElapsedTimer>
 #include <QGuiApplication>
+#include <QKeyEvent>
 #include <QLoggingCategory>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
@@ -13,6 +14,7 @@
 #include "core/Paths.h"
 #include "core/ProfileStore.h"
 #include "input/GamepadService.h"
+#include "platform/Windowing.h"
 #include "ui/LanguageService.h"
 #include "ui/LibraryService.h"
 #include "ui/ProfileService.h"
@@ -70,16 +72,34 @@ int main(int argc, char *argv[])
         return -1;
 
     if (auto *window = qobject_cast<QQuickWindow *>(engine.rootObjects().constFirst())) {
-        QObject::connect(window, &QQuickWindow::frameSwapped, window, [&startup, &gamepad] {
+        QObject::connect(window, &QQuickWindow::frameSwapped, window, [&startup, &gamepad, window] {
             qCInfo(lcApp) << "primeiro quadro em" << startup.elapsed() << "ms";
+            Windowing::bringToFront(window);
             gamepad.start();
         }, Qt::SingleShotConnection);
 
         // Desenvolvimento: QUADRUM_SCREENSHOT=caminho.png salva uma captura da janela
         // depois de alguns segundos (para conferir o visual sem olhar a tela).
+        // QUADRUM_DEV_KEYS=Right,Right,Down simula teclas antes da captura.
+        const QStringList devKeys = qEnvironmentVariable("QUADRUM_DEV_KEYS").split(u',', Qt::SkipEmptyParts);
+        const QHash<QString, int> keyNames{
+            {QStringLiteral("Left"), Qt::Key_Left}, {QStringLiteral("Right"), Qt::Key_Right},
+            {QStringLiteral("Up"), Qt::Key_Up}, {QStringLiteral("Down"), Qt::Key_Down},
+            {QStringLiteral("Return"), Qt::Key_Return}, {QStringLiteral("Escape"), Qt::Key_Escape},
+        };
+        for (int i = 0; i < devKeys.size(); ++i) {
+            const int key = keyNames.value(devKeys.at(i).trimmed(), 0);
+            QTimer::singleShot(1500 + i * 400, window, [window, key] {
+                QKeyEvent press(QEvent::KeyPress, key, Qt::NoModifier);
+                QCoreApplication::sendEvent(window, &press);
+                QKeyEvent release(QEvent::KeyRelease, key, Qt::NoModifier);
+                QCoreApplication::sendEvent(window, &release);
+            });
+        }
+
         const QString screenshot = qEnvironmentVariable("QUADRUM_SCREENSHOT");
         if (!screenshot.isEmpty()) {
-            QTimer::singleShot(3000, window, [window, screenshot] {
+            QTimer::singleShot(3000 + int(devKeys.size()) * 400, window, [window, screenshot] {
                 const bool saved = window->grabWindow().save(screenshot);
                 qCInfo(lcApp) << "captura" << (saved ? "salva em" : "falhou:") << screenshot;
             });

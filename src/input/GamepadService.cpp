@@ -11,6 +11,7 @@
 
 #include "core/Paths.h"
 #include "platform/Processes.h"
+#include "platform/Windowing.h"
 
 Q_LOGGING_CATEGORY(lcInput, "quadrum.input")
 
@@ -361,8 +362,21 @@ void GamepadService::press(const QString &name)
 void GamepadService::sendKey(int key, bool autoRepeat)
 {
     QWindow *window = QGuiApplication::focusWindow();
-    if (!window)
-        return; // app sem foco: as teclas não vão para o jogo, só os sinais PS/Share
+    if (!window) {
+        // A janela pode ter aberto sem foco (o Windows nem sempre deixa um app
+        // novo vir para a frente). Enquanto não há jogo aberto, o controle vale
+        // para a janela do hub mesmo assim, e pedimos para ela vir para a frente.
+        // Na Fase 2, com um jogo aberto, as teclas não serão enviadas.
+        for (QWindow *candidate : QGuiApplication::topLevelWindows()) {
+            if (candidate->isVisible()) {
+                Windowing::bringToFront(candidate);
+                break;
+            }
+        }
+        window = QGuiApplication::focusWindow();
+        if (!window)
+            return; // o Windows recusou o foco; a próxima tecla tenta de novo
+    }
     QKeyEvent press(QEvent::KeyPress, key, Qt::NoModifier, QString(), autoRepeat);
     QCoreApplication::sendEvent(window, &press);
     QKeyEvent release(QEvent::KeyRelease, key, Qt::NoModifier, QString(), autoRepeat);

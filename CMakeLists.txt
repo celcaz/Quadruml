@@ -38,6 +38,7 @@ target_link_libraries(quadrum_core PUBLIC
 # Aplicativo: interface QML e as pontes entre ela e o núcleo.
 qt_add_executable(quadrum
     src/app/main.cpp
+    src/platform/Windowing.h src/platform/Windowing.cpp
 )
 
 set_target_properties(quadrum PROPERTIES
@@ -65,6 +66,7 @@ qt_add_qml_module(quadrum
         qml/components/Clock.qml
         qml/components/CoverArt.qml
         qml/components/FocusRing.qml
+        qml/components/GameRow.qml
         qml/components/HintBar.qml
         qml/components/PillButton.qml
         qml/components/Tile.qml

@@ -86,39 +86,24 @@ FocusScope {
     }
 
     // Fileira de jogos: o item em foco fica sempre na primeira posição, à esquerda.
-    ListView {
+    GameRow {
         id: row
 
         x: Theme.marginH
         y: Theme.home.rowTop
         width: parent.width - x
         height: Theme.home.tileFocusedSize + Theme.px(56)
-        orientation: ListView.Horizontal
-        spacing: Theme.home.tileSpacing
         model: LibraryService.recent
         focus: true
-        interactive: false
-        clip: false
-        highlightRangeMode: ListView.StrictlyEnforceRange
-        preferredHighlightBegin: 0
-        preferredHighlightEnd: Theme.home.tileFocusedSize
-        highlightMoveDuration: Theme.durationNormal
-        highlightMoveVelocity: -1
-        keyNavigationWraps: false
 
         KeyNavigation.down: home.currentIsGame ? actions : null
 
-        onCurrentIndexChanged: Sounds.play("move")
-
-        Keys.onReturnPressed: {
-            Sounds.play("confirm")
+        onActivated: {
             if (home.currentIsGame)
                 toast.show(qsTr("Abrir jogos chega na Fase 2"))
             else
                 home.openLibrary()
         }
-
-        delegate: Tile {}
     }
 
     // Logo do jogo (ou o título, enquanto não houver logo)

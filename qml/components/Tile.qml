@@ -1,11 +1,12 @@
 import QtQuick
 import Quadrum
 
-// Item da fileira da tela inicial. O jogo em foco cresce e mostra nome e
-// plataforma ao lado; o último item ("library") abre a Biblioteca.
+// Item da GameRow. O jogo em foco cresce e mostra nome e plataforma ao lado;
+// o último item ("library") abre a Biblioteca.
 Item {
     id: tile
 
+    required property Item row
     required property int index
     required property string kind
     required property string title
@@ -17,25 +18,32 @@ Item {
     required property string description
     required property int minutesPlayed
 
-    readonly property bool current: ListView.isCurrentItem
-    readonly property bool focused: current && ListView.view.activeFocus
-    readonly property int artSize: current ? Theme.home.tileFocusedSize : Theme.home.tileSize
+    // Distância em itens até o jogo em foco: negativa = já passou (à esquerda).
+    readonly property int offset: index - row.currentIndex
+    readonly property bool current: offset === 0
+    readonly property bool focused: current && row.activeFocus
+    readonly property int step: Theme.home.tileSize + Theme.home.tileSpacing
+    readonly property int focusedBlock: Theme.home.tileFocusedSize + Theme.home.labelGap
+                                        + Theme.home.labelWidth + Theme.home.tileSpacing
 
-    width: current && kind === "game"
-           ? Theme.home.tileFocusedSize + Theme.home.labelGap + Theme.home.labelWidth
-           : artSize
-    height: ListView.view.height
+    x: offset < 0 ? offset * step
+       : offset === 0 ? 0
+       : focusedBlock + (offset - 1) * step
+    width: current ? Theme.home.tileFocusedSize : Theme.home.tileSize
+    height: row.height
+    opacity: offset < 0 ? 0 : 1
+    visible: opacity > 0
 
+    Behavior on x { NumberAnimation { duration: Theme.durationNormal; easing.type: Easing.OutCubic } }
     Behavior on width { NumberAnimation { duration: Theme.durationNormal; easing.type: Easing.OutCubic } }
+    Behavior on opacity { NumberAnimation { duration: Theme.durationNormal } }
 
     Item {
         id: art
 
-        width: tile.artSize
+        width: tile.width
         height: width
         anchors.verticalCenter: parent.verticalCenter
-
-        Behavior on width { NumberAnimation { duration: Theme.durationNormal; easing.type: Easing.OutCubic } }
 
         CoverArt {
             anchors.fill: parent
@@ -76,8 +84,7 @@ Item {
     }
 
     Column {
-        anchors.left: art.right
-        anchors.leftMargin: Theme.home.labelGap
+        x: art.width + Theme.home.labelGap
         anchors.verticalCenter: art.verticalCenter
         width: Theme.home.labelWidth
         spacing: Theme.px(6)
