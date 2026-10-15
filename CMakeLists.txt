@@ -10,7 +10,7 @@ set(QUADRUM_APP_ID "QuadrumI")
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 6.8 REQUIRED COMPONENTS Core Gui Qml Quick Sql LinguistTools)
+find_package(Qt6 6.8 REQUIRED COMPONENTS Core Gui Qml Quick Multimedia Sql LinguistTools)
 find_package(SDL3 CONFIG REQUIRED) # via vcpkg (vcpkg.json)
 qt_standard_project_setup(REQUIRES 6.8)
 
@@ -48,15 +48,31 @@ set_target_properties(quadrum PROPERTIES
 # O registro de tipos QML gerado pelo Qt inclui os headers só pelo nome.
 target_include_directories(quadrum PRIVATE src/ui src/input)
 
-set_source_files_properties(qml/theme/Theme.qml PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
+set_source_files_properties(qml/theme/Theme.qml qml/theme/Sounds.qml PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
 
 qt_add_qml_module(quadrum
     URI Quadrum
     VERSION 1.0
     QML_FILES
         qml/Main.qml
+        qml/DevOverlay.qml
         qml/theme/Theme.qml
+        qml/theme/Sounds.qml
+        qml/components/BackgroundLayer.qml
+        qml/components/BlurPanel.qml
+        qml/components/ButtonGlyph.qml
+        qml/components/Card.qml
+        qml/components/Clock.qml
+        qml/components/CoverArt.qml
+        qml/components/FocusRing.qml
+        qml/components/HintBar.qml
+        qml/components/PillButton.qml
+        qml/components/Tile.qml
+        qml/components/Toast.qml
+        qml/screens/Home.qml
     SOURCES
+        src/ui/GameListModel.h src/ui/GameListModel.cpp
+        src/ui/LibraryService.h src/ui/LibraryService.cpp
         src/ui/ThemeService.h src/ui/ThemeService.cpp
         src/ui/LanguageService.h src/ui/LanguageService.cpp
         src/ui/ProfileModel.h src/ui/ProfileModel.cpp
@@ -65,7 +81,8 @@ qt_add_qml_module(quadrum
 )
 
 qt_add_translations(quadrum
-    TS_FILES i18n/quadrum_en.ts
+    # pt_BR é o idioma do código; o arquivo dele só guarda as formas de plural.
+    TS_FILES i18n/quadrum_en.ts i18n/quadrum_pt_BR.ts
     RESOURCE_PREFIX /i18n
 )
 
@@ -74,6 +91,7 @@ target_link_libraries(quadrum PRIVATE
     Qt6::Gui
     Qt6::Qml
     Qt6::Quick
+    Qt6::Multimedia
     SDL3::SDL3
 )
 

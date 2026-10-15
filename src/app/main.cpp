@@ -5,6 +5,7 @@
 #include <QQmlContext>
 #include <QQuickWindow>
 #include <QSettings>
+#include <QTimer>
 
 #include "AppInfo.h"
 #include "core/Database.h"
@@ -13,6 +14,7 @@
 #include "core/ProfileStore.h"
 #include "input/GamepadService.h"
 #include "ui/LanguageService.h"
+#include "ui/LibraryService.h"
 #include "ui/ProfileService.h"
 #include "ui/ThemeService.h"
 
@@ -45,6 +47,9 @@ int main(int argc, char *argv[])
 
     ProfileService profiles(&profileStore, nullptr);
 
+    LibraryService library(nullptr);
+    library.loadSampleData(); // até a Etapa 7 (biblioteca real)
+
     // O SDL leva ~150 ms para iniciar: só liga depois do primeiro quadro (abaixo).
     GamepadService gamepad(nullptr);
 
@@ -69,6 +74,16 @@ int main(int argc, char *argv[])
             qCInfo(lcApp) << "primeiro quadro em" << startup.elapsed() << "ms";
             gamepad.start();
         }, Qt::SingleShotConnection);
+
+        // Desenvolvimento: QUADRUM_SCREENSHOT=caminho.png salva uma captura da janela
+        // depois de alguns segundos (para conferir o visual sem olhar a tela).
+        const QString screenshot = qEnvironmentVariable("QUADRUM_SCREENSHOT");
+        if (!screenshot.isEmpty()) {
+            QTimer::singleShot(3000, window, [window, screenshot] {
+                const bool saved = window->grabWindow().save(screenshot);
+                qCInfo(lcApp) << "captura" << (saved ? "salva em" : "falhou:") << screenshot;
+            });
+        }
     }
 
     return app.exec();

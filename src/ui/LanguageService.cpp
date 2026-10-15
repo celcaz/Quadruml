@@ -40,18 +40,17 @@ void LanguageService::setLanguage(const QString &language)
         m_installed = false;
     }
 
-    if (language != sourceLanguage()) {
-        if (m_translator.load(QStringLiteral(":/i18n/quadrum_") + language)) {
-            QCoreApplication::installTranslator(&m_translator);
-            m_installed = true;
-        } else {
-            qCWarning(lcLanguage) << "tradução não encontrada para" << language << "- mantendo pt_BR";
-            if (m_language == sourceLanguage())
-                return;
-        }
+    // Também para pt_BR: o arquivo dele traz as formas de plural ("1 hora", "34 horas").
+    if (m_translator.load(QStringLiteral(":/i18n/quadrum_") + language)) {
+        QCoreApplication::installTranslator(&m_translator);
+        m_installed = true;
+    } else if (language != sourceLanguage()) {
+        qCWarning(lcLanguage) << "tradução não encontrada para" << language << "- mantendo pt_BR";
+        if (m_language == sourceLanguage())
+            return;
     }
 
-    m_language = m_installed ? language : sourceLanguage();
+    m_language = (m_installed || language == sourceLanguage()) ? language : sourceLanguage();
     if (m_engine)
         m_engine->retranslate();
     qCInfo(lcLanguage) << "idioma:" << m_language;
