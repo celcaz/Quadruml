@@ -49,6 +49,9 @@ Item {
         source: cover.source
         asynchronous: true
         fillMode: Image.PreserveAspectCrop
+        // Capas verticais quase sempre têm o nome do jogo no alto: o recorte
+        // quadrado fica com a parte de cima em vez do meio.
+        verticalAlignment: implicitHeight > implicitWidth * 1.2 ? Image.AlignTop : Image.AlignVCenter
         sourceSize.width: width
         sourceSize.height: height
         visible: false

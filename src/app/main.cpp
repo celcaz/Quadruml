@@ -1,4 +1,7 @@
+#include <QDir>
 #include <QElapsedTimer>
+#include <QFile>
+#include <QFileInfo>
 #include <QFutureWatcher>
 #include <QGuiApplication>
 #include <QtConcurrent/QtConcurrentRun>
@@ -28,6 +31,34 @@
 
 Q_LOGGING_CATEGORY(lcApp, "quadrum.app")
 
+namespace {
+
+// Fixa uma imagem escolhida pelo usuário como capa da fileira de um jogo.
+// Provisório até a tela de trocar capa (Etapa 8):
+//   QuadrumI.exe --definir-capa steam:3354750 C:\caminho\capa.png
+bool setUserCover(GameRepository &repository, const QString &gameRef, const QString &file)
+{
+    const qsizetype colon = gameRef.indexOf(QLatin1Char(':'));
+    const qint64 gameId = colon > 0 ? repository.findGame(gameRef.left(colon), gameRef.mid(colon + 1)) : 0;
+    if (!gameId || !QFileInfo::exists(file)) {
+        qCWarning(lcApp) << "--definir-capa: jogo" << gameRef << "ou arquivo" << file << "não encontrado";
+        return false;
+    }
+    const QString target = QStringLiteral("%1/%2/quadrada-usuario.%3")
+                               .arg(Paths::mediaDir()).arg(gameId).arg(QFileInfo(file).suffix().toLower());
+    QDir().mkpath(QFileInfo(target).absolutePath());
+    QFile::remove(target);
+    if (!QFile::copy(file, target)) {
+        qCWarning(lcApp) << "--definir-capa: não foi possível copiar" << file;
+        return false;
+    }
+    repository.setUserMedia(gameId, QStringLiteral("quadrada"), target);
+    qCInfo(lcApp) << "capa escolhida pelo usuário definida para" << gameRef << ":" << target;
+    return true;
+}
+
+}
+
 int main(int argc, char *argv[])
 {
     QElapsedTimer startup;
@@ -56,6 +87,12 @@ int main(int argc, char *argv[])
     ProfileService profiles(&profileStore, nullptr);
 
     GameRepository gameRepository(database.handle());
+
+    const QStringList arguments = QCoreApplication::arguments();
+    const qsizetype coverArgument = arguments.indexOf(QStringLiteral("--definir-capa"));
+    if (coverArgument >= 0)
+        return setUserCover(gameRepository, arguments.value(coverArgument + 1), arguments.value(coverArgument + 2)) ? 0 : 2;
+
     LibraryService library(&gameRepository, nullptr);
     library.reload();
 

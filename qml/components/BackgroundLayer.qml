@@ -93,4 +93,16 @@ Item {
             GradientStop { position: 1; color: Qt.rgba(0, 0, 0, 0.7) }
         }
     }
+    // Topo levemente escuro: ícones e relógio legíveis mesmo sobre fundos claros.
+    Rectangle {
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
+        height: parent.height * 0.22
+        z: 2
+        gradient: Gradient {
+            GradientStop { position: 0; color: Qt.rgba(0, 0, 0, 0.55) }
+            GradientStop { position: 1; color: Qt.rgba(0, 0, 0, 0) }
+        }
+    }
 }

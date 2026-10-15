@@ -40,6 +40,20 @@ rpcs3=D:/GAMES/PS3/EMULATOR
 - **PS2**: arquivos `.iso`. O nome vem do `resources/GameIndex.yaml` do PCSX2 indicado em `emuladores/pcsx2`.
 - **PS3**: pastas de jogo (`<jogo>/PS3_GAME/PARAM.SFO`) e `.iso`, até dois níveis dentro da pasta.
 
+## Artes e descrições
+
+- Jogos da Steam: capa, fundo e logo do cache local da Steam; descrição da loja da Steam (em português).
+- SteamGridDB (capa quadrada, fundo, logo) e IGDB (descrições de console) usam chaves em `config.ini`:
+
+```ini
+[metadados]
+steamgriddb=...
+twitch_client_id=...
+twitch_client_secret=...
+```
+
+- Capa escolhida à mão (provisório até a Etapa 8): `QuadrumI.exe --definir-capa steam:3354750 C:\caminho\capa.png`. A busca automática nunca troca uma capa escolhida.
+
 ## Variáveis de desenvolvimento
 
 - `QUADRUM_SCREENSHOT=caminho.png`: salva uma captura da janela alguns segundos depois de abrir.

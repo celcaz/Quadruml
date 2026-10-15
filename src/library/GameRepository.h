@@ -69,6 +69,10 @@ public:
     // retryAfterDays dias.
     QList<MetadataTask> metadataTasks(int retryAfterDays = 7) const;
     void setMedia(qint64 gameId, const QString &type, const QString &path, const QString &origin);
+    // Arte escolhida pelo usuário: nenhuma busca automática a substitui depois.
+    void setUserMedia(qint64 gameId, const QString &type, const QString &path);
+    // Id do jogo pelo provedor + código (0 se não existir).
+    qint64 findGame(const QString &provider, const QString &externalId) const;
     void setInfo(qint64 gameId, const QString &description, const QString &genre, const QString &releaseDate,
                  const QString &source);
     // result: "ok", "nao_encontrado" ou "erro"

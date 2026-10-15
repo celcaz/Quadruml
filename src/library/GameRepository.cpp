@@ -297,3 +297,28 @@ void GameRepository::markInfo(qint64 gameId, const QString &result)
     query.addBindValue(result);
     query.exec();
 }
+
+void GameRepository::setUserMedia(qint64 gameId, const QString &type, const QString &path)
+{
+    QSqlQuery query(m_db);
+    query.prepare(QStringLiteral(
+        "INSERT INTO jogo_midia (jogo_id, tipo, caminho_local, origem, escolhida_pelo_usuario)"
+        " VALUES (?, ?, ?, 'usuario', 1)"
+        " ON CONFLICT(jogo_id, tipo) DO UPDATE SET caminho_local = excluded.caminho_local,"
+        " origem = 'usuario', escolhida_pelo_usuario = 1"));
+    query.addBindValue(gameId);
+    query.addBindValue(type);
+    query.addBindValue(path);
+    query.exec();
+}
+
+qint64 GameRepository::findGame(const QString &provider, const QString &externalId) const
+{
+    QSqlQuery query(m_db);
+    query.prepare(QStringLiteral("SELECT id FROM jogos WHERE provedor = ? AND id_externo = ?"));
+    query.addBindValue(provider);
+    query.addBindValue(externalId);
+    if (query.exec() && query.next())
+        return query.value(0).toLongLong();
+    return 0;
+}
