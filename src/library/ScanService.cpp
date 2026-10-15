@@ -42,6 +42,11 @@ ScanSummary run(const QString &databasePath, const ScanConfig &config)
     if (!config.ps3Folders.isEmpty())
         apply(Ps3Provider::Id, config.ps3Folders, Ps3Provider().scan(config.ps3Folders, repository));
 
+    if (!config.steamRoot.isEmpty()) {
+        apply(SteamProvider::Id, SteamProvider::libraryFolders(config.steamRoot),
+              SteamProvider().scan(config.steamRoot, repository));
+    }
+
     summary.byPlatform = repository.countByPlatform();
     summary.pending = repository.pendingCount();
     summary.elapsedMs = timer.elapsed();

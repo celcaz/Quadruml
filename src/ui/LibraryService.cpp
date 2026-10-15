@@ -54,10 +54,21 @@ void LibraryService::reload()
         entry.id = game.id;
         entry.title = game.title;
         entry.platform = game.platform;
+        entry.provider = game.provider;
         entry.accent = accentFor(game.title);
-        entry.description = game.identificationPending
-            ? tr("Jogo não identificado pelo código do disco. Dá para corrigir na tela de detalhes (Etapa 8).")
-            : tr("Código do disco: %1. Descrição e artes chegam na Etapa 7.").arg(game.externalId);
+        if (!game.coverPath.isEmpty())
+            entry.coverUrl = QUrl::fromLocalFile(game.coverPath);
+        if (!game.heroPath.isEmpty())
+            entry.heroUrl = QUrl::fromLocalFile(game.heroPath);
+        if (!game.logoPath.isEmpty())
+            entry.logoUrl = QUrl::fromLocalFile(game.logoPath);
+
+        if (game.identificationPending)
+            entry.description = tr("Jogo não identificado pelo código do disco. Dá para corrigir na tela de detalhes (Etapa 8).");
+        else if (game.provider == QLatin1String("steam"))
+            entry.description = tr("Steam · App %1. A descrição chega na Etapa 7.").arg(game.externalId);
+        else
+            entry.description = tr("Código do disco: %1. Descrição e artes chegam na Etapa 7.").arg(game.externalId);
         games.append(entry);
     }
     m_recent.setGames(std::move(games));

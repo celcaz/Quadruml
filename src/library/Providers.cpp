@@ -9,6 +9,7 @@
 #include <optional>
 
 #include "GameRepository.h"
+#include "Vdf.h"
 #include "disc/DiscInfo.h"
 #include "disc/Iso9660.h"
 #include "disc/SectorReader.h"
@@ -195,6 +196,116 @@ ProviderScan Ps3Provider::scan(const QStringList &folders, const GameRepository 
                 else
                     tryGameFolder(inner);
             }
+        }
+    }
+    return result;
+}
+
+// --- Steam ------------------------------------------------------------------
+
+QStringList SteamProvider::libraryFolders(const QString &steamRoot)
+{
+    QStringList folders;
+    QFile file(steamRoot + QStringLiteral("/steamapps/libraryfolders.vdf"));
+    if (file.open(QIODevice::ReadOnly)) {
+        const QVariantMap libraries = Vdf::parse(file.readAll()).value(QStringLiteral("libraryfolders")).toMap();
+        for (const QVariant &library : libraries) {
+            const QString path = library.toMap().value(QStringLiteral("path")).toString();
+            if (!path.isEmpty())
+                folders.append(QDir::cleanPath(QDir::fromNativeSeparators(path)) + QStringLiteral("/steamapps"));
+        }
+    }
+    const QString own = QDir::cleanPath(steamRoot) + QStringLiteral("/steamapps");
+    if (!folders.contains(own, Qt::CaseInsensitive))
+        folders.prepend(own);
+    return folders;
+}
+
+QMap<QString, QString> SteamProvider::localArtwork(const QString &steamRoot, const QString &appId)
+{
+    // Dois formatos de cache: o antigo, com arquivos direto em librarycache/<appid>/,
+    // e o novo, com cada arte numa subpasta de nome aleatório.
+    static const QList<QPair<QString, QStringList>> wanted{
+        {QStringLiteral("capa"), {QStringLiteral("library_600x900.jpg"), QStringLiteral("library_capsule.jpg")}},
+        {QStringLiteral("fundo"), {QStringLiteral("library_hero.jpg")}},
+        {QStringLiteral("logo"), {QStringLiteral("logo.png")}},
+    };
+
+    QMap<QString, QString> found;
+    const QString base = steamRoot + QStringLiteral("/appcache/librarycache/") + appId;
+    if (!QDir(base).exists())
+        return found;
+
+    QStringList candidates{base};
+    for (const QString &sub : QDir(base).entryList(QDir::Dirs | QDir::NoDotAndDotDot))
+        candidates.append(base + QLatin1Char('/') + sub);
+
+    for (const auto &[type, names] : wanted) {
+        for (const QString &dir : candidates) {
+            for (const QString &name : names) {
+                const QString path = dir + QLatin1Char('/') + name;
+                if (!found.contains(type) && QFileInfo::exists(path))
+                    found.insert(type, path);
+            }
+        }
+    }
+    return found;
+}
+
+bool SteamProvider::isTool(const QString &appId, const QString &name)
+{
+    static const QSet<QString> toolIds{
+        QStringLiteral("228980"),  // Steamworks Common Redistributables
+        QStringLiteral("250820"),  // SteamVR
+        QStringLiteral("1070560"), // Steam Linux Runtime
+        QStringLiteral("1391110"), // Steam Linux Runtime - Soldier
+        QStringLiteral("1628350"), // Steam Linux Runtime - Sniper
+        QStringLiteral("1826330"), // Proton EasyAntiCheat Runtime
+        QStringLiteral("1161040"), // Proton BattlEye Runtime
+    };
+    return toolIds.contains(appId) || name.startsWith(QLatin1String("Proton"))
+           || name.startsWith(QLatin1String("Steam Linux Runtime"))
+           || name.startsWith(QLatin1String("Steamworks"));
+}
+
+ProviderScan SteamProvider::scan(const QString &steamRoot, GameRepository &repository) const
+{
+    ProviderScan result;
+    for (const QString &steamapps : libraryFolders(steamRoot)) {
+        const QDir dir(steamapps);
+        for (const QFileInfo &info : dir.entryInfoList({QStringLiteral("appmanifest_*.acf")}, QDir::Files)) {
+            QFile file(info.absoluteFilePath());
+            if (!file.open(QIODevice::ReadOnly))
+                continue;
+            const QVariantMap app = Vdf::parse(file.readAll()).value(QStringLiteral("AppState")).toMap();
+            const QString appId = app.value(QStringLiteral("appid")).toString();
+            const QString name = app.value(QStringLiteral("name")).toString();
+            const int flags = app.value(QStringLiteral("StateFlags")).toInt();
+
+            // Bit 4 = instalado (pode estar com atualização pendente); ferramentas ficam de fora.
+            if (appId.isEmpty() || !(flags & 4) || isTool(appId, name))
+                continue;
+
+            const ScannedFile manifest = fileFrom(info, QStringLiteral("steam"));
+            result.seenPaths.insert(manifest.path);
+            const QMap<QString, QString> artwork = localArtwork(steamRoot, appId);
+
+            if (repository.isUnchanged(manifest.path, manifest.size, manifest.modified)) {
+                ++result.unchanged;
+                // A Steam pode ter baixado artes depois da última varredura.
+                repository.updateMedia(QString::fromLatin1(Id), appId, artwork);
+                continue;
+            }
+
+            ScannedGame game;
+            game.platform = QStringLiteral("pc");
+            game.provider = QString::fromLatin1(Id);
+            game.externalId = appId;
+            game.title = name.isEmpty() ? appId : name;
+            game.files.append(manifest);
+            game.media = artwork;
+            qCInfo(lcScan) << "Steam:" << appId << game.title << "artes:" << artwork.keys();
+            result.changed.append(game);
         }
     }
     return result;

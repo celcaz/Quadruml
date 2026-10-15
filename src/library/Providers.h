@@ -45,3 +45,22 @@ public:
 
     ProviderScan scan(const QStringList &folders, const GameRepository &repository) const;
 };
+
+// Steam: bibliotecas do libraryfolders.vdf e um jogo por appmanifest_*.acf instalado.
+// As artes vêm do cache local da Steam (appcache/librarycache), sem internet.
+class SteamProvider
+{
+public:
+    static constexpr const char *Id = "steam";
+
+    // Pastas steamapps de todas as bibliotecas (usadas para remover jogos desinstalados).
+    static QStringList libraryFolders(const QString &steamRoot);
+
+    // Artes de um app no cache da Steam: capa, fundo e logo (os que existirem).
+    static QMap<QString, QString> localArtwork(const QString &steamRoot, const QString &appId);
+
+    // Ferramentas da Steam que não são jogos (Proton, runtimes, redistribuíveis).
+    static bool isTool(const QString &appId, const QString &name);
+
+    ProviderScan scan(const QString &steamRoot, GameRepository &repository) const;
+};

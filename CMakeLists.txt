@@ -23,6 +23,8 @@ qt_add_library(quadrum_core STATIC
     src/core/Database.h src/core/Database.cpp
     src/core/ProfileStore.h src/core/ProfileStore.cpp
     src/platform/Processes.h src/platform/Processes.cpp
+    src/platform/SteamLocator.h src/platform/SteamLocator.cpp
+    src/library/Vdf.h src/library/Vdf.cpp
     src/disc/SectorReader.h
     src/disc/Iso9660.h src/disc/Iso9660.cpp
     src/disc/DiscInfo.h src/disc/DiscInfo.cpp

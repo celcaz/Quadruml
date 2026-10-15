@@ -10,6 +10,7 @@ struct GameEntry
     qint64 id = 0;
     QString title;
     QString platform; // "ps1", "ps2", "ps3", "ps4", "pc"
+    QString provider; // "ps2", "steam", ... (para jogos de PC, o nome da loja)
     QString description;
     QUrl coverUrl;
     QUrl heroUrl;
@@ -49,7 +50,8 @@ public:
 
     void setGames(QList<GameEntry> games);
 
-    static QString platformLabel(const QString &platform);
+    // "PS2", "PS3"...; para PC, o nome da loja ("Steam").
+    static QString platformLabel(const QString &platform, const QString &provider = {});
 
 private:
     QList<GameEntry> m_games;

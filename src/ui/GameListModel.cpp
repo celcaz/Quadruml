@@ -39,7 +39,7 @@ QVariant GameListModel::data(const QModelIndex &index, int role) const
     case TitleRole:
     case Qt::DisplayRole: return game.title;
     case PlatformRole: return game.platform;
-    case PlatformLabelRole: return platformLabel(game.platform);
+    case PlatformLabelRole: return platformLabel(game.platform, game.provider);
     case DescriptionRole: return game.description;
     case CoverUrlRole: return game.coverUrl;
     case HeroUrlRole: return game.heroUrl;
@@ -74,9 +74,14 @@ void GameListModel::setGames(QList<GameEntry> games)
     endResetModel();
 }
 
-QString GameListModel::platformLabel(const QString &platform)
+QString GameListModel::platformLabel(const QString &platform, const QString &provider)
 {
-    if (platform == QLatin1String("pc"))
+    if (platform == QLatin1String("pc")) {
+        if (provider == QLatin1String("steam"))
+            return QStringLiteral("Steam");
+        if (provider == QLatin1String("epic"))
+            return QStringLiteral("Epic Games");
         return QStringLiteral("PC");
+    }
     return platform.toUpper(); // ps1 -> PS1
 }

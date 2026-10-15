@@ -2,6 +2,7 @@
 
 #include <QDateTime>
 #include <QList>
+#include <QMap>
 #include <QString>
 
 struct ScannedFile
@@ -22,6 +23,9 @@ struct ScannedGame
     QString title;
     bool identificationPending = false;
     QList<ScannedFile> files;
+    // Artes encontradas no próprio PC (ex.: cache da Steam): tipo -> caminho.
+    // Tipos: "capa", "fundo", "logo".
+    QMap<QString, QString> media;
 };
 
 namespace ScanUtil {

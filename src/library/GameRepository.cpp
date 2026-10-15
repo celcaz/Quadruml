@@ -75,8 +75,41 @@ qint64 GameRepository::upsert(const ScannedGame &game)
         query.exec();
     }
     query.finish();
+    writeMedia(id, game.media, game.provider);
     m_db.commit();
     return id;
+}
+
+void GameRepository::updateMedia(const QString &provider, const QString &externalId,
+                                 const QMap<QString, QString> &media)
+{
+    if (media.isEmpty())
+        return;
+    QSqlQuery query(m_db);
+    query.prepare(QStringLiteral("SELECT id FROM jogos WHERE provedor = ? AND id_externo = ?"));
+    query.addBindValue(provider);
+    query.addBindValue(externalId);
+    if (!query.exec() || !query.next())
+        return;
+    const qint64 id = query.value(0).toLongLong();
+    query.finish();
+    writeMedia(id, media, provider);
+}
+
+void GameRepository::writeMedia(qint64 gameId, const QMap<QString, QString> &media, const QString &origin)
+{
+    QSqlQuery query(m_db);
+    for (auto it = media.cbegin(); it != media.cend(); ++it) {
+        query.prepare(QStringLiteral(
+            "INSERT INTO jogo_midia (jogo_id, tipo, caminho_local, origem) VALUES (?, ?, ?, ?)"
+            " ON CONFLICT(jogo_id, tipo) DO UPDATE SET caminho_local = excluded.caminho_local,"
+            " origem = excluded.origem WHERE jogo_midia.escolhida_pelo_usuario = 0"));
+        query.addBindValue(gameId);
+        query.addBindValue(it.key());
+        query.addBindValue(it.value());
+        query.addBindValue(origin);
+        query.exec();
+    }
 }
 
 int GameRepository::removeMissing(const QString &provider, const QStringList &roots, const QSet<QString> &seenPaths)
@@ -125,17 +158,24 @@ QList<StoredGame> GameRepository::recent(int limit) const
     QList<StoredGame> games;
     QSqlQuery query(m_db);
     query.prepare(QStringLiteral(
-        "SELECT id, plataforma, id_externo, titulo, identificacao_pendente FROM jogos"
-        " ORDER BY adicionado_em DESC, id DESC LIMIT ?"));
+        "SELECT j.id, j.plataforma, j.provedor, j.id_externo, j.titulo, j.identificacao_pendente,"
+        " (SELECT caminho_local FROM jogo_midia WHERE jogo_id = j.id AND tipo = 'capa'),"
+        " (SELECT caminho_local FROM jogo_midia WHERE jogo_id = j.id AND tipo = 'fundo'),"
+        " (SELECT caminho_local FROM jogo_midia WHERE jogo_id = j.id AND tipo = 'logo')"
+        " FROM jogos j ORDER BY j.adicionado_em DESC, j.id DESC LIMIT ?"));
     query.addBindValue(limit);
     query.exec();
     while (query.next()) {
         StoredGame game;
         game.id = query.value(0).toLongLong();
         game.platform = query.value(1).toString();
-        game.externalId = query.value(2).toString();
-        game.title = query.value(3).toString();
-        game.identificationPending = query.value(4).toBool();
+        game.provider = query.value(2).toString();
+        game.externalId = query.value(3).toString();
+        game.title = query.value(4).toString();
+        game.identificationPending = query.value(5).toBool();
+        game.coverPath = query.value(6).toString();
+        game.heroPath = query.value(7).toString();
+        game.logoPath = query.value(8).toString();
         games.append(game);
     }
     return games;

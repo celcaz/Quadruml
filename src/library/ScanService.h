@@ -9,6 +9,7 @@ struct ScanConfig
     QStringList ps2Folders;
     QStringList ps3Folders;
     QString pcsx2Dir;   // para achar o GameIndex.yaml (nomes dos jogos de PS2)
+    QString steamRoot;  // pasta da Steam; vazio = não ler a Steam
 };
 
 struct ScanSummary

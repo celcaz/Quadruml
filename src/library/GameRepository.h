@@ -12,9 +12,13 @@ struct StoredGame
 {
     qint64 id = 0;
     QString platform;
+    QString provider;
     QString externalId;
     QString title;
     bool identificationPending = false;
+    QString coverPath;
+    QString heroPath;
+    QString logoPath;
 };
 
 // Jogos e arquivos no banco (tabelas jogos e jogo_arquivos).
@@ -27,8 +31,12 @@ public:
     // ser aberto de novo (varredura incremental).
     bool isUnchanged(const QString &path, qint64 size, const QDateTime &modified) const;
 
-    // Cria ou atualiza o jogo (por provedor + código) e os seus arquivos.
+    // Cria ou atualiza o jogo (por provedor + código), os seus arquivos e artes.
     qint64 upsert(const ScannedGame &game);
+
+    // Atualiza só as artes de um jogo já existente (ex.: a Steam baixou a arte
+    // depois). Artes escolhidas pelo usuário nunca são trocadas.
+    void updateMedia(const QString &provider, const QString &externalId, const QMap<QString, QString> &media);
 
     // Remove do banco os arquivos do provedor que estão dentro de "roots" mas
     // não foram vistos nesta varredura, e os jogos que ficaram sem arquivo.
@@ -42,5 +50,7 @@ public:
     static QString sortTitle(const QString &title);
 
 private:
+    void writeMedia(qint64 gameId, const QMap<QString, QString> &media, const QString &origin);
+
     QSqlDatabase m_db;
 };

@@ -18,6 +18,7 @@
 #include "input/GamepadService.h"
 #include "library/GameRepository.h"
 #include "library/ScanService.h"
+#include "platform/SteamLocator.h"
 #include "platform/Windowing.h"
 #include "ui/LanguageService.h"
 #include "ui/LibraryService.h"
@@ -63,6 +64,9 @@ int main(int argc, char *argv[])
     scanConfig.ps2Folders = settings.value("pastas/ps2").toStringList();
     scanConfig.ps3Folders = settings.value("pastas/ps3").toStringList();
     scanConfig.pcsx2Dir = settings.value("emuladores/pcsx2").toString();
+    // Steam: encontrada sozinha pelo Registro; "lojas/steam=false" desliga.
+    if (settings.value("lojas/steam", true).toBool())
+        scanConfig.steamRoot = SteamLocator::steamRoot();
 
     QFutureWatcher<ScanSummary> scanWatcher;
     QObject::connect(&scanWatcher, &QFutureWatcher<ScanSummary>::finished, &library,
