@@ -15,6 +15,10 @@ QString mediaDir();
 // Onde procurar temas, em ordem de prioridade.
 QStringList themeSearchDirs();
 
+// Arquivo que acompanha o app (ao lado do .exe ou, no desenvolvimento, em assets/).
+// Devolve vazio se não existir em nenhum dos dois.
+QString findBundledFile(const QString &fileName, const QString &assetsSubdir);
+
 void ensureCreated();
 
 }

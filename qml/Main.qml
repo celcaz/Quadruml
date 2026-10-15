@@ -154,9 +154,20 @@ Window {
             font.family: Theme.fontFamily
             font.pixelSize: Theme.fontSmall
             text: GamepadService.connected
-                  ? qsTr("Etapa 3: controle %1 (%2) · último botão: %3").arg(GamepadService.controllerName)
-                        .arg(GamepadService.controllerType).arg(GamepadService.lastButton || "—")
+                  ? qsTr("Etapa 3: %n controle(s) · ativo: %1 (%2) · último botão: %3", "", GamepadService.count)
+                        .arg(GamepadService.controllerName).arg(GamepadService.controllerType)
+                        .arg(GamepadService.lastButton || "—")
                   : qsTr("Etapa 3: nenhum controle conectado")
+        }
+
+        Text {
+            anchors.horizontalCenter: parent.horizontalCenter
+            visible: GamepadService.steamMayBeBlocking
+            color: "#f2c94c"
+            font.family: Theme.fontFamily
+            font.pixelSize: Theme.fontSmall
+            horizontalAlignment: Text.AlignHCenter
+            text: qsTr("A Steam pode estar usando o seu controle.\nFeche a Steam ou desative o Steam Input em Steam > Configurações > Controle.")
         }
 
         // Teste de foco: navegue com o direcional ou as setas, confirme com Cruz ou Enter.

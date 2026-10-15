@@ -36,18 +36,28 @@
             <numerusform>Stage 2: database version %1 · %n profiles</numerusform>
         </translation>
     </message>
-    <message>
+    <message numerus="yes">
         <location filename="../qml/Main.qml" line="157"/>
-        <source>Etapa 3: controle %1 (%2) · último botão: %3</source>
-        <translation>Stage 3: controller %1 (%2) · last button: %3</translation>
+        <source>Etapa 3: %n controle(s) · ativo: %1 (%2) · último botão: %3</source>
+        <translation>
+            <numerusform>Stage 3: %n controller · active: %1 (%2) · last button: %3</numerusform>
+            <numerusform>Stage 3: %n controllers · active: %1 (%2) · last button: %3</numerusform>
+        </translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="159"/>
+        <location filename="../qml/Main.qml" line="160"/>
         <source>Etapa 3: nenhum controle conectado</source>
         <translation>Stage 3: no controller connected</translation>
     </message>
     <message>
-        <location filename="../qml/Main.qml" line="215"/>
+        <location filename="../qml/Main.qml" line="170"/>
+        <source>A Steam pode estar usando o seu controle.
+Feche a Steam ou desative o Steam Input em Steam &gt; Configurações &gt; Controle.</source>
+        <translation>Steam may be using your controller.
+Close Steam or turn off Steam Input in Steam &gt; Settings &gt; Controller.</translation>
+    </message>
+    <message>
+        <location filename="../qml/Main.qml" line="226"/>
         <source>F11: tela cheia · Ctrl+L: idioma · Ctrl+P: perfil de teste · Ctrl+Q: sair</source>
         <translation>F11: full screen · Ctrl+L: language · Ctrl+P: test profile · Ctrl+Q: quit</translation>
     </message>

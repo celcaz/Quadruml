@@ -5,6 +5,7 @@ namespace AppInfo {
 inline constexpr char DisplayName[] = "@QUADRUM_DISPLAY_NAME@";
 inline constexpr char Id[] = "@QUADRUM_APP_ID@";
 inline constexpr char Version[] = "@PROJECT_VERSION@";
-// Pasta de temas do código-fonte, usada ao rodar pelo Qt Creator.
+// Pastas do código-fonte, usadas como reserva ao rodar pelo Qt Creator.
 inline constexpr char SourceThemesDir[] = "@CMAKE_SOURCE_DIR@/themes";
+inline constexpr char SourceAssetsDir[] = "@CMAKE_SOURCE_DIR@/assets";
 }

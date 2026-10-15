@@ -2,6 +2,7 @@
 
 #include <QCoreApplication>
 #include <QDir>
+#include <QFileInfo>
 #include <QStandardPaths>
 
 #include "AppInfo.h"
@@ -41,6 +42,19 @@ QStringList themeSearchDirs()
     if (QDir(sourceThemes).exists())
         dirs.append(sourceThemes);
     return dirs;
+}
+
+QString findBundledFile(const QString &fileName, const QString &assetsSubdir)
+{
+    const QStringList candidates{
+        QCoreApplication::applicationDirPath() + QLatin1Char('/') + fileName,
+        QString::fromUtf8(AppInfo::SourceAssetsDir) + QLatin1Char('/') + assetsSubdir + QLatin1Char('/') + fileName,
+    };
+    for (const QString &path : candidates) {
+        if (QFileInfo::exists(path))
+            return path;
+    }
+    return {};
 }
 
 void ensureCreated()

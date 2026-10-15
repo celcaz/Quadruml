@@ -22,6 +22,7 @@ qt_add_library(quadrum_core STATIC
     src/core/Logger.h src/core/Logger.cpp
     src/core/Database.h src/core/Database.cpp
     src/core/ProfileStore.h src/core/ProfileStore.cpp
+    src/platform/Processes.h src/platform/Processes.cpp
 )
 
 target_include_directories(quadrum_core PUBLIC
@@ -74,6 +75,13 @@ target_link_libraries(quadrum PRIVATE
     Qt6::Qml
     Qt6::Quick
     SDL3::SDL3
+)
+
+# Base de mapeamentos de controles da comunidade, ao lado do executável.
+add_custom_command(TARGET quadrum POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        ${CMAKE_CURRENT_SOURCE_DIR}/assets/input/gamecontrollerdb.txt
+        $<TARGET_FILE_DIR:quadrum>/gamecontrollerdb.txt
 )
 
 enable_testing()
