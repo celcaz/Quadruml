@@ -14,6 +14,14 @@ Item {
 
     readonly property bool hasImage: image.status === Image.Ready
 
+    // "Shadow of Rome" -> "SR", "Skate 3" -> "S3", "skate." -> "S".
+    // Prefere palavras com maiúscula ou número (pula "of", "the"); se não houver, usa todas.
+    function initials(text) {
+        const words = text.replace(/[™®©.:,!?'"-]/g, " ").split(" ").filter(w => w.length > 0)
+        const significant = words.filter(w => w[0] !== w[0].toLowerCase() || (w[0] >= "0" && w[0] <= "9"))
+        return (significant.length > 0 ? significant : words).slice(0, 2).map(w => w[0].toUpperCase()).join("")
+    }
+
     Rectangle {
         anchors.fill: parent
         radius: cover.radius
@@ -30,9 +38,7 @@ Item {
             font.family: Theme.fontFamily
             font.pixelSize: parent.height * 0.3
             font.weight: Font.DemiBold
-            text: cover.title.split(" ")
-                       .filter(word => word.length > 0 && word[0] === word[0].toUpperCase())
-                       .slice(0, 2).map(word => word[0]).join("")
+            text: cover.initials(cover.title)
         }
     }
 

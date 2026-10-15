@@ -34,6 +34,7 @@ ps3=D:/GAMES/PS3/GAMES
 
 [emuladores]
 pcsx2=D:/GAMES/PS2/PCSX2
+rpcs3=D:/GAMES/PS3/EMULATOR
 ```
 
 - **PS2**: arquivos `.iso`. O nome vem do `resources/GameIndex.yaml` do PCSX2 indicado em `emuladores/pcsx2`.
