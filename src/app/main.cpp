@@ -18,6 +18,7 @@
 #include "input/GamepadService.h"
 #include "library/GameRepository.h"
 #include "library/ScanService.h"
+#include "metadata/MetadataService.h"
 #include "platform/SteamLocator.h"
 #include "platform/Windowing.h"
 #include "ui/LanguageService.h"
@@ -68,9 +69,27 @@ int main(int argc, char *argv[])
     if (settings.value("lojas/steam", true).toBool())
         scanConfig.steamRoot = SteamLocator::steamRoot();
 
+    // Artes e descrições da internet. Chaves em [metadados] no config.ini (nunca no código).
+    MetadataConfig metadataConfig;
+    metadataConfig.steamGridDbKey = settings.value("metadados/steamgriddb").toString().trimmed();
+    metadataConfig.twitchClientId = settings.value("metadados/twitch_client_id").toString().trimmed();
+    metadataConfig.twitchClientSecret = settings.value("metadados/twitch_client_secret").toString().trimmed();
+    metadataConfig.mediaDir = Paths::mediaDir();
+    MetadataService metadata(&gameRepository, metadataConfig);
+
+    // Cada jogo atualizado recarrega a tela, mas no máximo duas vezes por segundo.
+    QTimer reloadTimer;
+    reloadTimer.setSingleShot(true);
+    reloadTimer.setInterval(500);
+    QObject::connect(&reloadTimer, &QTimer::timeout, &library, &LibraryService::reload);
+    QObject::connect(&metadata, &MetadataService::gameUpdated, &reloadTimer, qOverload<>(&QTimer::start));
+
     QFutureWatcher<ScanSummary> scanWatcher;
     QObject::connect(&scanWatcher, &QFutureWatcher<ScanSummary>::finished, &library,
-                     [&library, &scanWatcher] { library.setScanResult(scanWatcher.result()); });
+                     [&library, &scanWatcher, &metadata] {
+                         library.setScanResult(scanWatcher.result());
+                         metadata.start();
+                     });
     auto startScan = [&library, &scanWatcher, scanConfig] {
         library.setScanning(true);
         scanWatcher.setFuture(QtConcurrent::run(&ScanService::run, Paths::databaseFile(), scanConfig));

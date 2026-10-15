@@ -17,6 +17,8 @@ Item {
     required property color accent
     required property string description
     required property int minutesPlayed
+    required property string genre
+    required property string releaseYear
 
     // Distância em itens até o jogo em foco: negativa = já passou (à esquerda).
     readonly property int offset: index - row.currentIndex

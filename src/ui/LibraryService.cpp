@@ -56,19 +56,24 @@ void LibraryService::reload()
         entry.platform = game.platform;
         entry.provider = game.provider;
         entry.accent = accentFor(game.title);
-        if (!game.coverPath.isEmpty())
-            entry.coverUrl = QUrl::fromLocalFile(game.coverPath);
+        // A fileira usa a capa quadrada (estilo PS5); sem ela, a vertical recortada.
+        const QString cover = game.squarePath.isEmpty() ? game.coverPath : game.squarePath;
+        if (!cover.isEmpty())
+            entry.coverUrl = QUrl::fromLocalFile(cover);
+        entry.genre = game.genre;
+        entry.releaseYear = game.releaseDate.right(4).toInt() > 1970 ? game.releaseDate.right(4)
+                                                                       : game.releaseDate.left(4);
         if (!game.heroPath.isEmpty())
             entry.heroUrl = QUrl::fromLocalFile(game.heroPath);
         if (!game.logoPath.isEmpty())
             entry.logoUrl = QUrl::fromLocalFile(game.logoPath);
 
-        if (game.identificationPending)
+        if (!game.description.isEmpty())
+            entry.description = game.description;
+        else if (game.identificationPending)
             entry.description = tr("Jogo não identificado pelo código do disco. Dá para corrigir na tela de detalhes (Etapa 8).");
-        else if (game.provider == QLatin1String("steam"))
-            entry.description = tr("Steam · App %1. A descrição chega na Etapa 7.").arg(game.externalId);
         else
-            entry.description = tr("Código do disco: %1. Descrição e artes chegam na Etapa 7.").arg(game.externalId);
+            entry.description = tr("Sem descrição ainda. Código: %1.").arg(game.externalId);
         games.append(entry);
     }
     m_recent.setGames(std::move(games));

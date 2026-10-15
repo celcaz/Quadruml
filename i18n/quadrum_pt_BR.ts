@@ -110,42 +110,42 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/screens/Home.qml" line="224"/>
+        <location filename="../qml/screens/Home.qml" line="228"/>
         <source>Sobre o jogo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/screens/Home.qml" line="232"/>
+        <location filename="../qml/screens/Home.qml" line="236"/>
         <source>Troféus</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/screens/Home.qml" line="233"/>
+        <location filename="../qml/screens/Home.qml" line="237"/>
         <source>Disponível na Fase 3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/screens/Home.qml" line="241"/>
+        <location filename="../qml/screens/Home.qml" line="245"/>
         <source>Save na nuvem</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/screens/Home.qml" line="242"/>
+        <location filename="../qml/screens/Home.qml" line="246"/>
         <source>Disponível na Fase 4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/screens/Home.qml" line="256"/>
+        <location filename="../qml/screens/Home.qml" line="260"/>
         <source>Selecionar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/screens/Home.qml" line="257"/>
+        <location filename="../qml/screens/Home.qml" line="261"/>
         <source>Voltar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/screens/Home.qml" line="258"/>
+        <location filename="../qml/screens/Home.qml" line="262"/>
         <source>Opções</source>
         <translation type="unfinished"></translation>
     </message>
@@ -153,27 +153,27 @@
 <context>
     <name>LibraryService</name>
     <message>
-        <location filename="../src/ui/LibraryService.cpp" line="59"/>
+        <location filename="../src/ui/LibraryService.cpp" line="74"/>
         <source>Jogo não identificado pelo código do disco. Dá para corrigir na tela de detalhes (Etapa 8).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/LibraryService.cpp" line="60"/>
-        <source>Código do disco: %1. Descrição e artes chegam na Etapa 7.</source>
+        <location filename="../src/ui/LibraryService.cpp" line="76"/>
+        <source>Sem descrição ainda. Código: %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/LibraryService.cpp" line="81"/>
+        <location filename="../src/ui/LibraryService.cpp" line="97"/>
         <source>%1 · %2 pendente(s) · varredura em %3 ms</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/LibraryService.cpp" line="82"/>
+        <location filename="../src/ui/LibraryService.cpp" line="98"/>
         <source>nenhum jogo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/LibraryService.cpp" line="99"/>
+        <location filename="../src/ui/LibraryService.cpp" line="115"/>
         <source>Jogo de exemplo. Configure as pastas de jogos para ver os seus.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -195,7 +195,7 @@ Feche a Steam ou desative o Steam Input em Steam &gt; Configurações &gt; Contr
 <context>
     <name>Tile</name>
     <message>
-        <location filename="../qml/components/Tile.qml" line="127"/>
+        <location filename="../qml/components/Tile.qml" line="129"/>
         <source>Biblioteca</source>
         <translation type="unfinished"></translation>
     </message>

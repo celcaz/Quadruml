@@ -12,6 +12,8 @@ struct GameEntry
     QString platform; // "ps1", "ps2", "ps3", "ps4", "pc"
     QString provider; // "ps2", "steam", ... (para jogos de PC, o nome da loja)
     QString description;
+    QString genre;
+    QString releaseYear;
     QUrl coverUrl;
     QUrl heroUrl;
     QUrl logoUrl;
@@ -40,6 +42,8 @@ public:
         LogoUrlRole,
         AccentRole,
         MinutesPlayedRole,
+        GenreRole,
+        ReleaseYearRole,
     };
 
     explicit GameListModel(bool includeLibraryTile, QObject *parent = nullptr);

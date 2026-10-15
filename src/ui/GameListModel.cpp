@@ -24,6 +24,8 @@ QVariant GameListModel::data(const QModelIndex &index, int role) const
         case KindRole: return QStringLiteral("library");
         case IdRole: return qint64(0);
         case MinutesPlayedRole: return 0;
+        case GenreRole:
+        case ReleaseYearRole: return QString();
         case AccentRole: return QColor();
         case CoverUrlRole:
         case HeroUrlRole:
@@ -46,6 +48,8 @@ QVariant GameListModel::data(const QModelIndex &index, int role) const
     case LogoUrlRole: return game.logoUrl;
     case AccentRole: return game.accent;
     case MinutesPlayedRole: return game.minutesPlayed;
+    case GenreRole: return game.genre;
+    case ReleaseYearRole: return game.releaseYear;
     }
     return {};
 }
@@ -64,6 +68,8 @@ QHash<int, QByteArray> GameListModel::roleNames() const
         {LogoUrlRole, "logoUrl"},
         {AccentRole, "accent"},
         {MinutesPlayedRole, "minutesPlayed"},
+        {GenreRole, "genre"},
+        {ReleaseYearRole, "releaseYear"},
     };
 }
 

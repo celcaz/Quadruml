@@ -160,9 +160,12 @@ QList<StoredGame> GameRepository::recent(int limit) const
     query.prepare(QStringLiteral(
         "SELECT j.id, j.plataforma, j.provedor, j.id_externo, j.titulo, j.identificacao_pendente,"
         " (SELECT caminho_local FROM jogo_midia WHERE jogo_id = j.id AND tipo = 'capa'),"
+        " (SELECT caminho_local FROM jogo_midia WHERE jogo_id = j.id AND tipo = 'quadrada'),"
         " (SELECT caminho_local FROM jogo_midia WHERE jogo_id = j.id AND tipo = 'fundo'),"
-        " (SELECT caminho_local FROM jogo_midia WHERE jogo_id = j.id AND tipo = 'logo')"
-        " FROM jogos j ORDER BY j.adicionado_em DESC, j.id DESC LIMIT ?"));
+        " (SELECT caminho_local FROM jogo_midia WHERE jogo_id = j.id AND tipo = 'logo'),"
+        " i.descricao, i.genero, i.lancamento"
+        " FROM jogos j LEFT JOIN jogo_info i ON i.jogo_id = j.id"
+        " ORDER BY j.adicionado_em DESC, j.id DESC LIMIT ?"));
     query.addBindValue(limit);
     query.exec();
     while (query.next()) {
@@ -174,8 +177,12 @@ QList<StoredGame> GameRepository::recent(int limit) const
         game.title = query.value(4).toString();
         game.identificationPending = query.value(5).toBool();
         game.coverPath = query.value(6).toString();
-        game.heroPath = query.value(7).toString();
-        game.logoPath = query.value(8).toString();
+        game.squarePath = query.value(7).toString();
+        game.heroPath = query.value(8).toString();
+        game.logoPath = query.value(9).toString();
+        game.description = query.value(10).toString();
+        game.genre = query.value(11).toString();
+        game.releaseDate = query.value(12).toString();
         games.append(game);
     }
     return games;
@@ -205,4 +212,88 @@ QString GameRepository::sortTitle(const QString &title)
     QString normalized = title.normalized(QString::NormalizationForm_D).toLower();
     normalized.removeIf([](QChar c) { return c.category() == QChar::Mark_NonSpacing; });
     return normalized.trimmed();
+}
+
+QList<MetadataTask> GameRepository::metadataTasks(int retryAfterDays) const
+{
+    // "Precisa" = nunca tentado, ou falhou e já passou o prazo para tentar de novo.
+    const QString due = QStringLiteral(
+        "(m.%1_em IS NULL OR (m.%1_resultado <> 'ok' AND m.%1_em < datetime('now', '-%2 days')))");
+    const QString artworkDue = due.arg(QStringLiteral("artes")).arg(retryAfterDays);
+    const QString infoDue = due.arg(QStringLiteral("info")).arg(retryAfterDays);
+
+    QSqlQuery query(m_db);
+    query.exec(QStringLiteral(
+        "SELECT j.id, j.plataforma, j.provedor, j.id_externo, j.titulo, COALESCE(m.sgdb_id, 0),"
+        " %1 AS artes, %2 AS info,"
+        " EXISTS(SELECT 1 FROM jogo_midia WHERE jogo_id = j.id AND tipo = 'quadrada'),"
+        " EXISTS(SELECT 1 FROM jogo_midia WHERE jogo_id = j.id AND tipo = 'fundo'),"
+        " EXISTS(SELECT 1 FROM jogo_midia WHERE jogo_id = j.id AND tipo = 'logo')"
+        " FROM jogos j LEFT JOIN metadados m ON m.jogo_id = j.id"
+        " WHERE j.identificacao_pendente = 0 AND (%1 OR %2)"
+        " ORDER BY j.adicionado_em DESC").arg(artworkDue, infoDue));
+
+    QList<MetadataTask> tasks;
+    while (query.next()) {
+        MetadataTask task;
+        task.gameId = query.value(0).toLongLong();
+        task.platform = query.value(1).toString();
+        task.provider = query.value(2).toString();
+        task.externalId = query.value(3).toString();
+        task.title = query.value(4).toString();
+        task.sgdbId = query.value(5).toInt();
+        task.needArtwork = query.value(6).toBool();
+        task.needInfo = query.value(7).toBool();
+        task.needSquare = task.needArtwork && !query.value(8).toBool();
+        task.needHero = task.needArtwork && !query.value(9).toBool();
+        task.needLogo = task.needArtwork && !query.value(10).toBool();
+        tasks.append(task);
+    }
+    return tasks;
+}
+
+void GameRepository::setMedia(qint64 gameId, const QString &type, const QString &path, const QString &origin)
+{
+    writeMedia(gameId, {{type, path}}, origin);
+}
+
+void GameRepository::setInfo(qint64 gameId, const QString &description, const QString &genre,
+                             const QString &releaseDate, const QString &source)
+{
+    QSqlQuery query(m_db);
+    query.prepare(QStringLiteral(
+        "INSERT INTO jogo_info (jogo_id, descricao, genero, lancamento, fonte) VALUES (?, ?, ?, ?, ?)"
+        " ON CONFLICT(jogo_id) DO UPDATE SET descricao = excluded.descricao, genero = excluded.genero,"
+        " lancamento = excluded.lancamento, fonte = excluded.fonte"));
+    query.addBindValue(gameId);
+    query.addBindValue(description);
+    query.addBindValue(genre);
+    query.addBindValue(releaseDate);
+    query.addBindValue(source);
+    query.exec();
+}
+
+void GameRepository::markArtwork(qint64 gameId, const QString &result, int sgdbId)
+{
+    QSqlQuery query(m_db);
+    query.prepare(QStringLiteral(
+        "INSERT INTO metadados (jogo_id, sgdb_id, artes_em, artes_resultado) VALUES (?, ?, datetime('now'), ?)"
+        " ON CONFLICT(jogo_id) DO UPDATE SET artes_em = excluded.artes_em,"
+        " artes_resultado = excluded.artes_resultado,"
+        " sgdb_id = CASE WHEN excluded.sgdb_id > 0 THEN excluded.sgdb_id ELSE metadados.sgdb_id END"));
+    query.addBindValue(gameId);
+    query.addBindValue(sgdbId);
+    query.addBindValue(result);
+    query.exec();
+}
+
+void GameRepository::markInfo(qint64 gameId, const QString &result)
+{
+    QSqlQuery query(m_db);
+    query.prepare(QStringLiteral(
+        "INSERT INTO metadados (jogo_id, info_em, info_resultado) VALUES (?, datetime('now'), ?)"
+        " ON CONFLICT(jogo_id) DO UPDATE SET info_em = excluded.info_em, info_resultado = excluded.info_resultado"));
+    query.addBindValue(gameId);
+    query.addBindValue(result);
+    query.exec();
 }

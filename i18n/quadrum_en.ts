@@ -110,42 +110,42 @@
         <translation>Game options arrive in Stage 8</translation>
     </message>
     <message>
-        <location filename="../qml/screens/Home.qml" line="224" />
+        <location filename="../qml/screens/Home.qml" line="228" />
         <source>Sobre o jogo</source>
         <translation>About the game</translation>
     </message>
     <message>
-        <location filename="../qml/screens/Home.qml" line="232" />
+        <location filename="../qml/screens/Home.qml" line="236" />
         <source>Troféus</source>
         <translation>Trophies</translation>
     </message>
     <message>
-        <location filename="../qml/screens/Home.qml" line="233" />
+        <location filename="../qml/screens/Home.qml" line="237" />
         <source>Disponível na Fase 3</source>
         <translation>Available in Phase 3</translation>
     </message>
     <message>
-        <location filename="../qml/screens/Home.qml" line="241" />
+        <location filename="../qml/screens/Home.qml" line="245" />
         <source>Save na nuvem</source>
         <translation>Cloud save</translation>
     </message>
     <message>
-        <location filename="../qml/screens/Home.qml" line="242" />
+        <location filename="../qml/screens/Home.qml" line="246" />
         <source>Disponível na Fase 4</source>
         <translation>Available in Phase 4</translation>
     </message>
     <message>
-        <location filename="../qml/screens/Home.qml" line="256" />
+        <location filename="../qml/screens/Home.qml" line="260" />
         <source>Selecionar</source>
         <translation>Select</translation>
     </message>
     <message>
-        <location filename="../qml/screens/Home.qml" line="257" />
+        <location filename="../qml/screens/Home.qml" line="261" />
         <source>Voltar</source>
         <translation>Back</translation>
     </message>
     <message>
-        <location filename="../qml/screens/Home.qml" line="258" />
+        <location filename="../qml/screens/Home.qml" line="262" />
         <source>Opções</source>
         <translation>Options</translation>
     </message>
@@ -153,27 +153,31 @@
 <context>
     <name>LibraryService</name>
     <message>
-        <location filename="../src/ui/LibraryService.cpp" line="59" />
+        <location filename="../src/ui/LibraryService.cpp" line="74" />
         <source>Jogo não identificado pelo código do disco. Dá para corrigir na tela de detalhes (Etapa 8).</source>
         <translation>Game not identified by its disc code. You can fix it on the details screen (Stage 8).</translation>
     </message>
     <message>
-        <location filename="../src/ui/LibraryService.cpp" line="60" />
         <source>Código do disco: %1. Descrição e artes chegam na Etapa 7.</source>
-        <translation>Disc code: %1. Description and artwork arrive in Stage 7.</translation>
+        <translation type="vanished">Disc code: %1. Description and artwork arrive in Stage 7.</translation>
     </message>
     <message>
-        <location filename="../src/ui/LibraryService.cpp" line="81" />
+        <location filename="../src/ui/LibraryService.cpp" line="76" />
+        <source>Sem descrição ainda. Código: %1.</source>
+        <translation>No description yet. Code: %1.</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/LibraryService.cpp" line="97" />
         <source>%1 · %2 pendente(s) · varredura em %3 ms</source>
         <translation>%1 · %2 pending · scanned in %3 ms</translation>
     </message>
     <message>
-        <location filename="../src/ui/LibraryService.cpp" line="82" />
+        <location filename="../src/ui/LibraryService.cpp" line="98" />
         <source>nenhum jogo</source>
         <translation>no games</translation>
     </message>
     <message>
-        <location filename="../src/ui/LibraryService.cpp" line="99" />
+        <location filename="../src/ui/LibraryService.cpp" line="115" />
         <source>Jogo de exemplo. Configure as pastas de jogos para ver os seus.</source>
         <translation>Sample game. Set up your game folders to see your own.</translation>
     </message>
@@ -196,7 +200,7 @@ Close Steam or turn off Steam Input in Steam &gt; Settings &gt; Controller.</tra
 <context>
     <name>Tile</name>
     <message>
-        <location filename="../qml/components/Tile.qml" line="127" />
+        <location filename="../qml/components/Tile.qml" line="129" />
         <source>Biblioteca</source>
         <translation>Game Library</translation>
     </message>

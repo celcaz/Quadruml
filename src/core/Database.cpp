@@ -79,6 +79,18 @@ const std::vector<Migration> &migrations()
                valor TEXT)
         )",
     }},
+    {2, {
+        // O que já foi buscado na internet para cada jogo (artes e descrição),
+        // para não repetir a busca a cada abertura.
+        R"(CREATE TABLE metadados (
+               jogo_id INTEGER PRIMARY KEY REFERENCES jogos(id) ON DELETE CASCADE,
+               sgdb_id INTEGER,
+               artes_em TEXT,
+               artes_resultado TEXT,
+               info_em TEXT,
+               info_resultado TEXT)
+        )",
+    }},
     };
     return list;
 }

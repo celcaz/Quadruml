@@ -10,7 +10,7 @@ set(QUADRUM_APP_ID "QuadrumI")
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 6.8 REQUIRED COMPONENTS Core Concurrent Gui Qml Quick Multimedia Sql LinguistTools)
+find_package(Qt6 6.8 REQUIRED COMPONENTS Core Concurrent Gui Qml Quick Multimedia Network Sql LinguistTools)
 find_package(SDL3 CONFIG REQUIRED) # via vcpkg (vcpkg.json)
 qt_standard_project_setup(REQUIRES 6.8)
 
@@ -33,6 +33,8 @@ qt_add_library(quadrum_core STATIC
     src/library/GameRepository.h src/library/GameRepository.cpp
     src/library/Providers.h src/library/Providers.cpp
     src/library/ScanService.h src/library/ScanService.cpp
+    src/metadata/MetadataParsing.h src/metadata/MetadataParsing.cpp
+    src/metadata/MetadataService.h src/metadata/MetadataService.cpp
 )
 
 target_include_directories(quadrum_core PUBLIC
@@ -42,6 +44,7 @@ target_include_directories(quadrum_core PUBLIC
 
 target_link_libraries(quadrum_core PUBLIC
     Qt6::Core
+    Qt6::Network
     Qt6::Sql
 )
 

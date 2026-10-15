@@ -16,9 +16,29 @@ struct StoredGame
     QString externalId;
     QString title;
     bool identificationPending = false;
-    QString coverPath;
+    QString coverPath;   // capa vertical (ex.: Steam)
+    QString squarePath;  // capa quadrada (ícone estilo PS5)
     QString heroPath;
     QString logoPath;
+    QString description;
+    QString genre;
+    QString releaseDate;
+};
+
+// Jogo que ainda precisa de artes ou descrição da internet.
+struct MetadataTask
+{
+    qint64 gameId = 0;
+    QString platform;
+    QString provider;
+    QString externalId;
+    QString title;
+    int sgdbId = 0;
+    bool needArtwork = false;
+    bool needSquare = false;
+    bool needHero = false;
+    bool needLogo = false;
+    bool needInfo = false;
 };
 
 // Jogos e arquivos no banco (tabelas jogos e jogo_arquivos).
@@ -42,6 +62,18 @@ public:
     // não foram vistos nesta varredura, e os jogos que ficaram sem arquivo.
     // Pastas que não existem (disco desconectado) são ignoradas: nada é apagado.
     int removeMissing(const QString &provider, const QStringList &roots, const QSet<QString> &seenPaths);
+
+    // --- Metadados (artes e descrições da internet) ---
+
+    // Jogos sem tentativa ainda, ou cuja última tentativa falhou há mais de
+    // retryAfterDays dias.
+    QList<MetadataTask> metadataTasks(int retryAfterDays = 7) const;
+    void setMedia(qint64 gameId, const QString &type, const QString &path, const QString &origin);
+    void setInfo(qint64 gameId, const QString &description, const QString &genre, const QString &releaseDate,
+                 const QString &source);
+    // result: "ok", "nao_encontrado" ou "erro"
+    void markArtwork(qint64 gameId, const QString &result, int sgdbId = 0);
+    void markInfo(qint64 gameId, const QString &result);
 
     QList<StoredGame> recent(int limit) const;
     QMap<QString, int> countByPlatform() const;

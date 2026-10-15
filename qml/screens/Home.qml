@@ -190,11 +190,15 @@ FocusScope {
         color: Theme.textMuted
         font.family: Theme.fontFamily
         font.pixelSize: Theme.fontSmall
-        // O tempo de jogo começa a contar na Fase 2; até lá, só a plataforma.
-        text: !home.currentIsGame ? ""
-              : home.current.minutesPlayed > 0
-                ? home.current.platformLabel + "  ·  " + home.formatPlaytime(home.current.minutesPlayed)
-                : home.current.platformLabel
+        // Plataforma · gênero · ano · tempo de jogo (o que existir; o tempo começa na Fase 2).
+        text: {
+            if (!home.currentIsGame)
+                return ""
+            const parts = [home.current.platformLabel, home.current.genre, home.current.releaseYear]
+            if (home.current.minutesPlayed > 0)
+                parts.push(home.formatPlaytime(home.current.minutesPlayed))
+            return parts.filter(part => part && part.length > 0).join("  ·  ")
+        }
     }
 
     // Cartões
