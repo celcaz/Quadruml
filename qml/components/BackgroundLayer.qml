@@ -17,15 +17,18 @@ Item {
     Component.onCompleted: swap()
 
     function swap() {
-        const next = aInFront ? slideB : slideA
-        const previous = aInFront ? slideA : slideB
-        if (next.imageSource === source && next.slideTint === tint && next.opacity === 1)
+        // Compara com a camada que está NA FRENTE (a que o usuário vê). A de trás
+        // pode guardar uma imagem antiga igual à pedida, mas não está visível.
+        const front = aInFront ? slideA : slideB
+        const back = aInFront ? slideB : slideA
+        if (front.shown && front.imageSource.toString() === source.toString()
+                && Qt.colorEqual(front.slideTint, tint))
             return
-        next.imageSource = source
-        next.slideTint = tint
-        next.z = 1
-        previous.z = 0
-        next.fadeIn()
+        back.imageSource = source
+        back.slideTint = tint
+        back.z = 1
+        front.z = 0
+        back.fadeIn()
         aInFront = !aInFront
     }
 
@@ -34,8 +37,10 @@ Item {
 
         property url imageSource
         property color slideTint: Theme.backgroundAlt
+        property bool shown: false
 
         function fadeIn() {
+            shown = true
             opacity = 0
             fade.restart()
         }
