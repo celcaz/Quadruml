@@ -11,8 +11,17 @@ Item {
     property string title
     property color accent: Theme.backgroundAlt
     property real radius: Theme.radiusMedium
+    // Tamanho em que a imagem é lida do disco. Fixo de propósito: a capa muda de
+    // tamanho na animação de foco, e ligar isto à largura recarregaria a imagem a
+    // cada quadro (ela sumia e apareciam as iniciais).
+    property int loadSize: Theme.home.tileFocusedSize
 
-    readonly property bool hasImage: image.status === Image.Ready
+    // Fica verdadeiro na primeira vez que a imagem carrega; só volta a falso se
+    // trocar de imagem ou der erro. Assim o marcador nunca pisca por cima da capa.
+    property bool loaded: false
+    readonly property bool hasImage: loaded && image.status !== Image.Error
+
+    onSourceChanged: loaded = false
 
     // "Shadow of Rome" -> "SR", "Skate 3" -> "S3", "skate." -> "S".
     // Prefere palavras com maiúscula ou número (pula "of", "the"); se não houver, usa todas.
@@ -48,13 +57,17 @@ Item {
         anchors.fill: parent
         source: cover.source
         asynchronous: true
+        retainWhileLoading: true
         fillMode: Image.PreserveAspectCrop
         // Capas verticais quase sempre têm o nome do jogo no alto: o recorte
         // quadrado fica com a parte de cima em vez do meio.
         verticalAlignment: implicitHeight > implicitWidth * 1.2 ? Image.AlignTop : Image.AlignVCenter
-        sourceSize.width: width
-        sourceSize.height: height
+        sourceSize: Qt.size(cover.loadSize, cover.loadSize)
+        smooth: true
+        mipmap: true
         visible: false
+
+        onStatusChanged: if (status === Image.Ready) cover.loaded = true
     }
 
     MultiEffect {

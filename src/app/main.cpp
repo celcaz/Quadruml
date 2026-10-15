@@ -180,7 +180,11 @@ int main(int argc, char *argv[])
 
         const QString screenshot = qEnvironmentVariable("QUADRUM_SCREENSHOT");
         if (!screenshot.isEmpty()) {
-            QTimer::singleShot(3000 + int(devKeys.size()) * 400, window, [window, screenshot] {
+            // QUADRUM_SCREENSHOT_DELAY: milissegundos depois da última tecla (padrão 1500).
+            // Um valor curto (ex.: 100) fotografa no meio de uma animação.
+            const int delay = qEnvironmentVariableIsSet("QUADRUM_SCREENSHOT_DELAY")
+                                  ? qEnvironmentVariableIntValue("QUADRUM_SCREENSHOT_DELAY") : 1500;
+            QTimer::singleShot(1500 + int(devKeys.size()) * 400 + delay, window, [window, screenshot] {
                 const bool saved = window->grabWindow().save(screenshot);
                 qCInfo(lcApp) << "captura" << (saved ? "salva em" : "falhou:") << screenshot;
             });
