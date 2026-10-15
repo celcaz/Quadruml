@@ -10,7 +10,7 @@ set(QUADRUM_APP_ID "QuadrumI")
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 6.8 REQUIRED COMPONENTS Core Gui Qml Quick Multimedia Sql LinguistTools)
+find_package(Qt6 6.8 REQUIRED COMPONENTS Core Concurrent Gui Qml Quick Multimedia Sql LinguistTools)
 find_package(SDL3 CONFIG REQUIRED) # via vcpkg (vcpkg.json)
 qt_standard_project_setup(REQUIRES 6.8)
 
@@ -23,6 +23,14 @@ qt_add_library(quadrum_core STATIC
     src/core/Database.h src/core/Database.cpp
     src/core/ProfileStore.h src/core/ProfileStore.cpp
     src/platform/Processes.h src/platform/Processes.cpp
+    src/disc/SectorReader.h
+    src/disc/Iso9660.h src/disc/Iso9660.cpp
+    src/disc/DiscInfo.h src/disc/DiscInfo.cpp
+    src/titles/Ps2TitleDb.h src/titles/Ps2TitleDb.cpp
+    src/library/ScannedGame.h
+    src/library/GameRepository.h src/library/GameRepository.cpp
+    src/library/Providers.h src/library/Providers.cpp
+    src/library/ScanService.h src/library/ScanService.cpp
 )
 
 target_include_directories(quadrum_core PUBLIC
@@ -90,6 +98,7 @@ qt_add_translations(quadrum
 
 target_link_libraries(quadrum PRIVATE
     quadrum_core
+    Qt6::Concurrent
     Qt6::Gui
     Qt6::Qml
     Qt6::Quick

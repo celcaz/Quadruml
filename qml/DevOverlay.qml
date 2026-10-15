@@ -46,6 +46,10 @@ Rectangle {
             text: qsTr("Etapa 4: usando jogos de exemplo")
         }
         Line {
+            text: qsTr("Etapa 5: %1").arg(LibraryService.scanning ? qsTr("varrendo as pastas de jogos...")
+                                                                  : LibraryService.scanSummary)
+        }
+        Line {
             text: qsTr("F11: tela cheia · Ctrl+L: idioma · Ctrl+P: perfil de teste · F12: este painel · Ctrl+Q: sair")
         }
     }

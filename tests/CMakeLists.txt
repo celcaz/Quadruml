@@ -14,3 +14,5 @@ endfunction()
 
 quadrum_add_test(tst_database)
 quadrum_add_test(tst_profilestore)
+quadrum_add_test(tst_disc)
+quadrum_add_test(tst_gamerepository)

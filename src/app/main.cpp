@@ -1,5 +1,7 @@
 #include <QElapsedTimer>
+#include <QFutureWatcher>
 #include <QGuiApplication>
+#include <QtConcurrent/QtConcurrentRun>
 #include <QKeyEvent>
 #include <QLoggingCategory>
 #include <QQmlApplicationEngine>
@@ -14,6 +16,8 @@
 #include "core/Paths.h"
 #include "core/ProfileStore.h"
 #include "input/GamepadService.h"
+#include "library/GameRepository.h"
+#include "library/ScanService.h"
 #include "platform/Windowing.h"
 #include "ui/LanguageService.h"
 #include "ui/LibraryService.h"
@@ -49,8 +53,24 @@ int main(int argc, char *argv[])
 
     ProfileService profiles(&profileStore, nullptr);
 
-    LibraryService library(nullptr);
-    library.loadSampleData(); // até a Etapa 7 (biblioteca real)
+    GameRepository gameRepository(database.handle());
+    LibraryService library(&gameRepository, nullptr);
+    library.reload();
+
+    // Pastas de jogos e emuladores. Até a tela de Configurações (Etapa 8), vêm do config.ini:
+    //   [pastas] ps2=D:/GAMES/PS2/GAMES   [emuladores] pcsx2=D:/GAMES/PS2/PCSX2
+    ScanConfig scanConfig;
+    scanConfig.ps2Folders = settings.value("pastas/ps2").toStringList();
+    scanConfig.ps3Folders = settings.value("pastas/ps3").toStringList();
+    scanConfig.pcsx2Dir = settings.value("emuladores/pcsx2").toString();
+
+    QFutureWatcher<ScanSummary> scanWatcher;
+    QObject::connect(&scanWatcher, &QFutureWatcher<ScanSummary>::finished, &library,
+                     [&library, &scanWatcher] { library.setScanResult(scanWatcher.result()); });
+    auto startScan = [&library, &scanWatcher, scanConfig] {
+        library.setScanning(true);
+        scanWatcher.setFuture(QtConcurrent::run(&ScanService::run, Paths::databaseFile(), scanConfig));
+    };
 
     // O SDL leva ~150 ms para iniciar: só liga depois do primeiro quadro (abaixo).
     GamepadService gamepad(nullptr);
@@ -72,10 +92,11 @@ int main(int argc, char *argv[])
         return -1;
 
     if (auto *window = qobject_cast<QQuickWindow *>(engine.rootObjects().constFirst())) {
-        QObject::connect(window, &QQuickWindow::frameSwapped, window, [&startup, &gamepad, window] {
+        QObject::connect(window, &QQuickWindow::frameSwapped, window, [&startup, &gamepad, window, startScan] {
             qCInfo(lcApp) << "primeiro quadro em" << startup.elapsed() << "ms";
             Windowing::bringToFront(window);
             gamepad.start();
+            startScan();
         }, Qt::SingleShotConnection);
 
         // Desenvolvimento: QUADRUM_SCREENSHOT=caminho.png salva uma captura da janela

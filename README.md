@@ -20,8 +20,29 @@ Pelo Qt Creator:
 
 Pelo terminal: `tools\build.bat` compila em `build\msvc-debug`. Os testes rodam com `ctest --test-dir build\msvc-debug`.
 
-Atalhos de desenvolvimento: F11 alterna tela cheia, Ctrl+L troca o idioma, Ctrl+Q fecha.
+Atalhos de desenvolvimento: F11 alterna tela cheia, F12 mostra o painel de desenvolvimento, Ctrl+L troca o idioma, Ctrl+Q fecha.
 Dados e log ficam em `%LOCALAPPDATA%\QuadrumI` (`logs\quadrum.log`).
+
+## Pastas de jogos
+
+Até a tela de Configurações (Etapa 8), as pastas ficam em `%LOCALAPPDATA%\QuadrumI\config.ini`:
+
+```ini
+[pastas]
+ps2=D:/GAMES/PS2/GAMES
+ps3=D:/GAMES/PS3/GAMES
+
+[emuladores]
+pcsx2=D:/GAMES/PS2/PCSX2
+```
+
+- **PS2**: arquivos `.iso`. O nome vem do `resources/GameIndex.yaml` do PCSX2 indicado em `emuladores/pcsx2`.
+- **PS3**: pastas de jogo (`<jogo>/PS3_GAME/PARAM.SFO`) e `.iso`, até dois níveis dentro da pasta.
+
+## Variáveis de desenvolvimento
+
+- `QUADRUM_SCREENSHOT=caminho.png`: salva uma captura da janela alguns segundos depois de abrir.
+- `QUADRUM_DEV_KEYS=Right,Right,Down`: simula teclas antes da captura.
 
 ## Documentos
 

@@ -34,9 +34,13 @@ Item {
     opacity: offset < 0 ? 0 : 1
     visible: opacity > 0
 
-    Behavior on x { NumberAnimation { duration: Theme.durationNormal; easing.type: Easing.OutCubic } }
-    Behavior on width { NumberAnimation { duration: Theme.durationNormal; easing.type: Easing.OutCubic } }
-    Behavior on opacity { NumberAnimation { duration: Theme.durationNormal } }
+    // Só anima depois de criado: uma capa nova (lista recarregada) já nasce no lugar.
+    property bool ready: false
+    Component.onCompleted: ready = true
+
+    Behavior on x { enabled: tile.ready; NumberAnimation { duration: Theme.durationNormal; easing.type: Easing.OutCubic } }
+    Behavior on width { enabled: tile.ready; NumberAnimation { duration: Theme.durationNormal; easing.type: Easing.OutCubic } }
+    Behavior on opacity { enabled: tile.ready; NumberAnimation { duration: Theme.durationNormal } }
 
     Item {
         id: art
@@ -91,7 +95,7 @@ Item {
         opacity: tile.current && tile.kind === "game" ? 1 : 0
         visible: opacity > 0
 
-        Behavior on opacity { NumberAnimation { duration: Theme.durationNormal } }
+        Behavior on opacity { enabled: tile.ready; NumberAnimation { duration: Theme.durationNormal } }
 
         Text {
             width: parent.width

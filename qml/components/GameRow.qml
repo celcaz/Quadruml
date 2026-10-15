@@ -10,11 +10,20 @@ FocusScope {
     property alias model: repeater.model
     property int currentIndex: 0
     readonly property int count: repeater.count
-    readonly property Item currentItem: count > 0 ? repeater.itemAt(Math.min(currentIndex, count - 1)) : null
+    // Atualizado à mão: repeater.itemAt() não avisa quando os itens são recriados
+    // (ex.: lista recarregada depois da varredura).
+    property Item currentItem: null
 
     signal activated(int index)
 
-    onCountChanged: if (currentIndex >= count) currentIndex = Math.max(0, count - 1)
+    function refreshCurrent() {
+        if (currentIndex >= count)
+            currentIndex = Math.max(0, count - 1)
+        currentItem = count > 0 ? repeater.itemAt(currentIndex) : null
+    }
+
+    onCurrentIndexChanged: refreshCurrent()
+    onCountChanged: Qt.callLater(refreshCurrent)
 
     Keys.onLeftPressed: event => {
         if (currentIndex > 0) {
@@ -36,5 +45,7 @@ FocusScope {
     Repeater {
         id: repeater
         delegate: Tile { row: gameRow }
+        onItemAdded: Qt.callLater(gameRow.refreshCurrent)
+        onItemRemoved: Qt.callLater(gameRow.refreshCurrent)
     }
 }
