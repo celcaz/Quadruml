@@ -19,7 +19,7 @@ copy /y "%BUILD%\SDL3.dll" "%DIST%\" >nul || exit /b 1
 copy /y "%BUILD%\gamecontrollerdb.txt" "%DIST%\" >nul || exit /b 1
 
 rem Bibliotecas e plugins do Qt usados pelo app (QML, multimidia, SQLite, rede...).
-"%QT_DIR%\bin\windeployqt.exe" --release --qmldir "%ROOT%\qml" --no-translations --no-system-d3d-compiler --no-opengl-sw "%DIST%\QuadrumI.exe" || exit /b 1
+"%QT_DIR%\bin\windeployqt.exe" --release --qmldir "%ROOT%\qml" --no-translations --no-system-d3d-compiler --no-opengl-sw --no-compiler-runtime "%DIST%\QuadrumI.exe" || exit /b 1
 
 rem Runtime do Visual C++ ao lado do exe (a Microsoft permite): abre mesmo em PCs
 rem sem o "Visual C++ Redistributable" instalado.
