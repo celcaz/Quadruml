@@ -64,5 +64,6 @@ private:
     QList<Step> m_steps;
     QString m_igdbToken;
     bool m_running = false;
+    bool m_changedCurrent = false; // o jogo atual ganhou arte ou descrição nova?
     int m_processed = 0;
 };

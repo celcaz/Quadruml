@@ -81,9 +81,12 @@ void MetadataService::nextTask()
         return;
     }
 
+    m_changedCurrent = false;
     m_steps.append([this, task](Done done) {
         ++m_processed;
-        emit gameUpdated(task.gameId);
+        // Só avisa a tela se algo novo foi salvo (arte ou descrição).
+        if (m_changedCurrent)
+            emit gameUpdated(task.gameId);
         done();
     });
     runSteps();
@@ -116,8 +119,10 @@ void MetadataService::steamInfo(const MetadataTask &task, Done done)
             return;
         }
         const auto info = MetadataParsing::parseSteamAppDetails(body, task.externalId);
-        if (info.found)
+        if (info.found) {
             m_repository->setInfo(task.gameId, info.description, info.genre, info.releaseDate, QStringLiteral("steam"));
+            m_changedCurrent = true;
+        }
         m_repository->markInfo(task.gameId, info.found ? QStringLiteral("ok") : QStringLiteral("nao_encontrado"));
         qCInfo(lcMeta) << "descrição Steam" << task.title << (info.found ? "ok" : "não encontrada");
         done();
@@ -147,8 +152,10 @@ void MetadataService::igdbInfo(const MetadataTask &task, Done done)
                      return;
                  }
                  const auto info = MetadataParsing::parseIgdbGames(body, task.title);
-                 if (info.found)
+                 if (info.found) {
                      m_repository->setInfo(task.gameId, info.description, info.genre, info.releaseDate, QStringLiteral("igdb"));
+                     m_changedCurrent = true;
+                 }
                  m_repository->markInfo(task.gameId, info.found ? QStringLiteral("ok") : QStringLiteral("nao_encontrado"));
                  qCInfo(lcMeta) << "descrição IGDB" << task.title << (info.found ? "ok" : "não encontrada");
                  done();
@@ -280,6 +287,7 @@ void MetadataService::fetchSgdbImages(const MetadataTask &task, int sgdbId, Done
                 if (ok) {
                     m_repository->setMedia(task.gameId, kind.type, path, QStringLiteral("steamgriddb"));
                     ++*saved;
+                    m_changedCurrent = true;
                 }
                 (*step)();
             });

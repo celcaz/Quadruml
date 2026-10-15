@@ -18,3 +18,10 @@ quadrum_add_test(tst_disc)
 quadrum_add_test(tst_gamerepository)
 quadrum_add_test(tst_steam)
 quadrum_add_test(tst_metadata)
+
+# Modelo da interface: compilado direto no teste (não faz parte do núcleo).
+quadrum_add_test(tst_gamelistmodel)
+target_sources(tst_gamelistmodel PRIVATE
+    ${CMAKE_SOURCE_DIR}/src/ui/GameListModel.h ${CMAKE_SOURCE_DIR}/src/ui/GameListModel.cpp)
+target_include_directories(tst_gamelistmodel PRIVATE ${CMAKE_SOURCE_DIR}/src/ui)
+target_link_libraries(tst_gamelistmodel PRIVATE Qt6::Gui Qt6::Qml)

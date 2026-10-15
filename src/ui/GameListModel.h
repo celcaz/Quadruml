@@ -19,6 +19,8 @@ struct GameEntry
     QUrl logoUrl;
     QColor accent;    // cor provisória enquanto não há capa/fundo
     int minutesPlayed = 0;
+
+    bool operator==(const GameEntry &) const = default;
 };
 
 // Lista de jogos para as telas (fileira da tela inicial, grade da biblioteca).
@@ -52,7 +54,13 @@ public:
     QVariant data(const QModelIndex &index, int role) const override;
     QHash<int, QByteArray> roleNames() const override;
 
-    void setGames(QList<GameEntry> games);
+    // Atualiza a lista mexendo o mínimo possível na tela:
+    //  - mesmos jogos na mesma ordem: avisa só as linhas que mudaram (as capas
+    //    continuam existindo; só a que mudou troca de imagem);
+    //  - nada mudou: não faz nada;
+    //  - entrou ou saiu jogo: recria a lista.
+    // Devolve se algo mudou.
+    bool setGames(QList<GameEntry> games);
 
     // "PS2", "PS3"...; para PC, o nome da loja ("Steam").
     static QString platformLabel(const QString &platform, const QString &provider = {});

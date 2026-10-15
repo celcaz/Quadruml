@@ -73,11 +73,29 @@ QHash<int, QByteArray> GameListModel::roleNames() const
     };
 }
 
-void GameListModel::setGames(QList<GameEntry> games)
+bool GameListModel::setGames(QList<GameEntry> games)
 {
-    beginResetModel();
-    m_games = std::move(games);
-    endResetModel();
+    const bool sameGames = games.size() == m_games.size()
+        && std::equal(games.cbegin(), games.cend(), m_games.cbegin(),
+                      [](const GameEntry &a, const GameEntry &b) { return a.id == b.id; });
+
+    if (!sameGames) {
+        beginResetModel();
+        m_games = std::move(games);
+        endResetModel();
+        return true;
+    }
+
+    bool changed = false;
+    for (qsizetype row = 0; row < games.size(); ++row) {
+        if (games.at(row) == m_games.at(row))
+            continue;
+        m_games[row] = games.at(row);
+        const QModelIndex index = this->index(int(row));
+        emit dataChanged(index, index);
+        changed = true;
+    }
+    return changed;
 }
 
 QString GameListModel::platformLabel(const QString &platform, const QString &provider)

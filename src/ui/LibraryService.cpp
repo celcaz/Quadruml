@@ -76,9 +76,11 @@ void LibraryService::reload()
             entry.description = tr("Sem descrição ainda. Código: %1.").arg(game.externalId);
         games.append(entry);
     }
-    m_recent.setGames(std::move(games));
-    m_usingSampleData = false;
-    emit changed();
+    const bool listChanged = m_recent.setGames(std::move(games));
+    if (listChanged || m_usingSampleData) {
+        m_usingSampleData = false;
+        emit changed();
+    }
 }
 
 void LibraryService::setScanning(bool scanning)
@@ -116,6 +118,8 @@ void LibraryService::loadSampleData()
         return entry;
     };
 
+    if (m_usingSampleData)
+        return; // já está mostrando os exemplos
     m_recent.setGames({
         game(1, "Shadow of the Colossus", "ps2", "#6b7f8f", 2040),
         game(2, "Bloodborne", "ps4", "#5a2a2a", 5100),
